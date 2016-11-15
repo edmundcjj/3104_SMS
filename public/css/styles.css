@@ -1,0 +1,40 @@
+.table-responsive {
+    overflow: visible;
+}
+
+.col-md-8 .form-group .datepicker{
+     background-color: white;
+ }
+
+.input-group.input-group-unstyled input.form-control {
+    -webkit-border-radius: 4px;
+       -moz-border-radius: 4px;
+            border-radius: 4px;
+}
+.input-group-unstyled .input-group-addon {
+    border-radius: 4px;
+    border: 0px;
+    background-color: transparent;
+}
+
+body{
+    counter-reset: Serial;
+}
+
+tr .label_num:first-child:before
+{
+    counter-increment: Serial;
+    content: counter(Serial);
+}
+
+.label_num {
+    width:5%;
+}
+
+.nameWidth{
+    width:200px;
+}
+
+.numberWidth{
+    width:150px;
+}
