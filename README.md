@@ -1,3 +1,7 @@
+# IMPORTANT!!!
+
+Unzip vendor.rar before you start to edit the project files
+
 # Laravel PHP Framework
 
 [![Build Status](https://travis-ci.org/laravel/framework.svg)](https://travis-ci.org/laravel/framework)
