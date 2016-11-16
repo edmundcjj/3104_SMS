@@ -59,7 +59,15 @@ class StudentController extends Controller
     public function store(Request $request)
     {
 
-        // error_log("what up ");
+        $getPassword = $request->input('student_Pass');
+
+        $this->validate($request,[
+
+                'student_Pass' => 'required|regex:/^(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]{7,}$/',
+            ]);
+        $hashedPassword = Hash::make($getPassword);
+
+        // // error_log("what up ");
         $validateNRIC = $request->input('studentNRIC');
         if(Student::where('student_Nric', '=', $validateNRIC )->exists()){
             Session::flash('unsuccess_NRIC', 'NRIC ID exists' );
@@ -67,32 +75,32 @@ class StudentController extends Controller
         }
         $getDate = $request->input('birthDate');
         $getDate = date('Y-m-d', strtotime($getDate));
-        $getPassword = $request->input('student_Pass');
-        $hashedPassword = Hash::make($getPassword);
-
+       
         date_default_timezone_set('Asia/Singapore');
 
         $createLogin = new User();
-        $createLogin->name = $validateNRIC;
+        $createLogin->name = $request->input('student_id');
         $createLogin->password = $hashedPassword;
         $createLogin->role = 'Student';
         //$createLogin->email = 'random@email.com';
         $createLogin->save();
 
         $getParticulars = new Student();
-        $getParticulars->student_Nric =$validateNRIC;
         $getParticulars->studentID = $request->input('student_id');
-        $getParticulars->student_Password = $hashedPassword;
         $getParticulars->studentName = $request->input('studentName');
+        $getParticulars->student_Nric =$validateNRIC;
+        $getParticulars->studentPassword = $hashedPassword;
+        $getParticulars->password_date = date('Y/m/d');
+        $getParticulars->email = $request->input('student_email');
+        
         $getParticulars->birth_Date = $getDate;
         $getParticulars->address = $request->input('student_address');
         $getParticulars->status = $request->input('student_status');
         $getParticulars->courseID = $request->input('course_id');
         $getParticulars->admission_Year = $request->input('admissionYear');
         $getParticulars->cumulative_GPA = 0;
-        $getParticulars->password_date = date('Y/m/d');
-
-        $getParticulars->save();
+        
+       $getParticulars->save();
 
         Session::flash('success', 'Student Particular have been successfully created!');
         return redirect()->route('students.index');
@@ -155,6 +163,12 @@ class StudentController extends Controller
     public function update(Request $request, $id)
     {
         $input = $request->all();
+
+
+         $this->validate($request,[
+
+                'student_Pass' => 'required|regex:/^(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]{7,}$/',
+            ]);
 
         $getDate = $request->input('birthDate');
         $getDate = date('Y-m-d', strtotime($getDate));

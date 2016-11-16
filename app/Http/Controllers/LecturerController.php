@@ -55,6 +55,14 @@ class LecturerController extends Controller
      */
     public function store(Request $request)
     {
+        $getPassword = $request->input('lecturer_Password');
+
+        $this->validate($request, [
+                'lecturer_Password' => 'required|regex:/^(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]{7,}$/',
+            ]);
+
+        $hashedPassword = Hash::make($getPassword);
+
         $validateNRIC = $request->input('lecturer_Nric');
         if(Lecturer::where('lecturer_Nric', '=', $validateNRIC )->exists()){
             Session::flash('unsuccess_NRIC', 'NRIC ID exists' );
@@ -62,29 +70,27 @@ class LecturerController extends Controller
         }
 
         $getDate = $request->input('birthDate');
-        $getDate = date('Y-m-d', strtotime($getDate));
-        $getPassword = $request->input('lecturer_Password');
-        $hashedPassword = Hash::make($getPassword);
-
+        $getDate = date('Y-m-d', strtotime($getDate));        
         date_default_timezone_set('Asia/Singapore');
 
         $createLogin = new User();
-        $createLogin->name = $validateNRIC;
+        $createLogin->name = $request->input('lecturer_id');
         $createLogin->password = $hashedPassword;
         $createLogin->role = 'Lecturer';
         //$createLogin->email = 'random@email.com';
         $createLogin->save();
 
         $getParticulars = new Lecturer();
-        $getParticulars->lecturer_Nric =$validateNRIC;
         $getParticulars->lecturerID = $request->input('lecturer_id');
         $getParticulars->lecturerName = $request->input('lecturerName');
-        $getParticulars->birth_Date = $getDate;
-
+        $getParticulars->lecturer_Nric =$validateNRIC;
+        $getParticulars->lecturerPassword = $hashedPassword;
+        $getParticulars->password_date = date('Y/m/d');
         $getParticulars->email = $request->input('lecturer_email');
         $getParticulars->address = $request->input('address');
+        $getParticulars->birth_Date = $getDate;
         $getParticulars->position = $request->input('position');
-        $getParticulars->password_date = date('Y/m/d');
+        
 
         $getParticulars->save();
 
@@ -140,6 +146,11 @@ class LecturerController extends Controller
     public function update(Request $request, $id)
     {
         $input = $request->all();
+
+
+        $this->validate($request, [
+                'lecturer_Password' => 'required|regex:/^(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]{7,}$/',
+            ]);
 
         $getDate = $request->input('birthDate');
         $getDate = date('Y-m-d', strtotime($getDate));

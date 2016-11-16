@@ -28,11 +28,6 @@
 </div>
 
 <div class="form-group">
-	{!! Form::label('student_email', 'E-Mail Address:') !!}
-	{!! Form::text('email', null, array('required', 'class'=>'form-control', 'placeholder'=>'Enter E-Mail Address')) !!}
-</div>
-
-<div class="form-group">
 {!! Form::label('student_Pass', 'Password:') !!}
 <div class="input-group input-group-unstyled">
 <!-- { !! Form::password('student_Pass', array('class' => 'form-control', 'required' ,'placeholder' => 'Enter Password' )) !!} -->
@@ -44,15 +39,22 @@
 </div>
 
 
+
 <div class="form-group">
-	{!! Form::label('birthDate', 'Date of Birth:') !!}
-	{!! Form::text('birthDate', null, ['required','readonly','class' => 'form-control datepicker', 'style' => 'width:200px']) !!}
+	{!! Form::label('student_email', 'E-Mail Address:') !!}
+	{!! Form::text('student_email', null, ['required', 'class'=>'form-control', 'placeholder'=>'Enter E-Mail Address']) !!}
 </div>
 
 
 <div class="form-group">
 	{!! Form::label('student_address', 'Address:') !!}
 	{!! Form::text('student_address', null, ['required' ,'class' => 'form-control', 'placeholder' => 'Enter Address']) !!}
+</div>
+
+
+<div class="form-group">
+	{!! Form::label('birthDate', 'Date of Birth:') !!}
+	{!! Form::text('birthDate', null, ['required','readonly','class' => 'form-control datepicker', 'style' => 'width:280px']) !!}
 </div>
 
 
@@ -71,6 +73,7 @@
 	{!! Form::label('course_id', 'Course:') !!}
 	<!-- {! ! Form::select('course_id', array($displayCourse->courseName)) !!} -->
 	<select class="form-control" name="course_id">
+	<option value="" disabled selected>Select Course</option>
 	 @foreach($displayCourse as $display_C)
 		<option value="{{ $display_C->courseID }}">{{ $display_C->courseName }}</option>
 	@endforeach 

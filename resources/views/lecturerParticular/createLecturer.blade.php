@@ -24,21 +24,14 @@
 
 <div class="form-group">
 	{!! Form::label('lecturer_id', 'Admin Number:') !!}
-	{!! Form::text('lecturer_id', null, ['class' => 'form-control', 'required' ,'placeholder' => 'Enter Admin No.', 'maxlength' => '7']) !!}
+	{!! Form::text('lecturer_id', null, ['class' => 'form-control', 'required' ,'placeholder' => 'Enter Admin No.', 'maxlength' => '8']) !!}
 </div>
 
-
-
-<div class="form-group">
-	{!! Form::label('lecturer_email', 'E-Mail Address:') !!}
-	{!! Form::text('lecturer_email', null, array('required', 'class'=>'form-control', 'placeholder'=>'Enter E-Mail Address')) !!}
-</div>
 
 <div class="form-group">
 {!! Form::label('lecturer_Password', 'Password:') !!}
-<!--{!! Form::password('lecturer_Password', array('class' => 'form-control', 'required' ,'placeholder' => 'Enter Password' )) !!}-->
+<!--{ !! Form::password('lecturer_Password', array('class' => 'form-control', 'required' ,'placeholder' => 'Enter Password' )) !!}-->
 <div class="input-group input-group-unstyled">
-<!--{!! Form::password('student_Pass', array('class' => 'form-control', 'required' ,'placeholder' => 'Enter Password' )) !!}-->
 <input class="form-control" type="password"  name="lecturer_Password" id="lecturer_Password" placeholder="Enter Password">
 <span class="input-group-addon">
 <i class="glyphicon glyphicon-eye-open" name="leye" id="leye"></i>
@@ -46,6 +39,14 @@
 </div>
 
 </div>
+
+
+<div class="form-group">
+	{!! Form::label('lecturer_email', 'E-Mail Address:') !!}
+	{!! Form::text('lecturer_email', null, array('required', 'class'=>'form-control', 'placeholder'=>'Enter E-Mail Address')) !!}
+</div>
+
+
 
 <div class="form-group">
 	{!! Form::label('address', 'Address:') !!}
