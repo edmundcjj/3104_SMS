@@ -146,31 +146,76 @@ class LecturerController extends Controller
     public function update(Request $request, $id)
     {
         $input = $request->all();
-
-
-        $this->validate($request, [
-                'lecturer_Password' => 'required|regex:/^(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]{7,}$/',
-            ]);
+        $getUserRole = Auth::user()->role;
 
         $getDate = $request->input('birthDate');
         $getDate = date('Y-m-d', strtotime($getDate));
 
-        $getRole = Auth::user()->role;
-        
-        // Admin able to change Lecturer status
-        if($getRole == 'Admin'){
-            DB::table('lecturer')
-            ->where('lecturerID', $id)
-            ->update([
-                'lecturerName' => $request['lecturerName'],
-                'birth_Date' => $getDate,
-                'lecturerPassword' => $request['lect_Pass'] ,
-                'address' => $request['address'],
-                'position' => $request['position']
+        date_default_timezone_set('Asia/Singapore');
+
+        // Validate for a change in Password
+        if($request->input('lect_Checkbox') === 'enabled_Checkbox'){
+
+            $getPassword = $request['lecturer_Password'];
+
+            $this->validate($request, [
+                'lecturer_Password' => 'required|regex:/^(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]{7,}$/',
             ]);
-        }
-        // Lecturer/HOD can only update their own info
-        else{
+            
+            $hashedPassword = Hash::make($getPassword);
+
+            if($getUserRole == 'Admin'){
+
+                // Admin able to change Lecturer status
+                DB::table('lecturer')
+                ->where('lecturerID', $id)
+                ->update([
+                    'lecturerName' => $request['lecturerName'],
+                    'birth_Date' => $getDate,
+                    'lecturerPassword' => $hashedPassword,
+                    'password_date' => date('Y/m/d'),
+                    'address' => $request['address'],
+                    'position' => $request['position'],
+                ]);
+            }
+            else{
+
+                // Lecturer update their own profile
+                DB::table('lecturer')
+                ->where('lecturerID', $id)
+                ->update([
+                    'lecturerName' => $request['lecturerName'],
+                    'birth_Date' => $getDate,
+                    'lecturerPassword' => $hashedPassword,
+                    'password_date' => date('Y/m/d'),
+                    'address' => $request['address']
+                   // 'position' => $request['position'],
+                ]);
+            }
+
+             DB::table('users')
+        ->where('name', $id)
+        ->update([
+            'password' => $hashedPassword
+            ]); 
+         }
+         // Without Change Password
+         else{
+
+            if($getUserRole == 'Admin'){
+
+                // Admin able to change Lecturer status
+                DB::table('lecturer')
+                ->where('lecturerID', $id)
+                ->update([
+                    'lecturerName' => $request['lecturerName'],
+                    'birth_Date' => $getDate,
+                    'address' => $request['address'],
+                    'position' => $request['position'],
+                ]);
+            }
+                // Lecturer/HOD can only update their own info
+            else{
             DB::table('lecturer')
             ->where('lecturerID', $id)
             ->update([
@@ -180,17 +225,10 @@ class LecturerController extends Controller
                 'address' => $request['address']
             ]);
 
-        }
+            }
 
+         }
 
-        $hashed = Hash::make($request->input('lect_Pass'));
-
-        DB::table('users')
-        ->where('id', $id)
-        ->update(['password'=>$hashed]); 
-
-
-        
         Session::flash('success', 'Updates have been successfully saved!');
         return redirect()->back();
 

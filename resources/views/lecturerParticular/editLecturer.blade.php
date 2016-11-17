@@ -21,14 +21,25 @@
 			{!! Form::text('lecturer_Nric', $lecturer->lecturer_Nric, ['readonly', 'class' => 'form-control']) !!}
 		</div>
 
+
+		<div class="form-group">
+			{!! Form::label('lecturer_id', 'Matriculation Number:', ['class' => 'control-label']) !!}
+			{!! Form::text('lecturer_id', $lecturer->lecturerID, ['class' => 'form-control', 'readonly' , 'maxlength' => '8']) !!}
+		</div>
+
 		<div class="form-group">
 		{!! Form::label('lect_Pass', 'Password:') !!}
 		<div class="input-group input-group-unstyled">
-		<input class="form-control" type="password"  name="lect_Pass" id="lect_Pass" placeholder="Enter Password" value="{!!$lecturer->lecturerPassword!!}">
+		<!-- <input class="form-control" type="password"  name="lect_Pass" id="lect_Pass" placeholder="Enter Password" value="{ !!$lecturer->lecturerPassword!!}"> -->
+
+		<input class="form-control" type="password"  name="lecturer_Password" id="lecturer_Pass" placeholder="Enter New Password" disabled>
+
 		<span class="input-group-addon">
 		<i class="glyphicon glyphicon-eye-open" name="seelectpass" id="seelectpass"></i>
 		</span>
 		</div>
+
+		<input type="checkbox" name="lect_Checkbox" id="lecturer_chkBox" value="enabled_Checkbox" ><b> Change Password </b> <br>
 		</div>
 
 		<div class="form-group">
@@ -68,4 +79,5 @@
 
 @section('scripts')
 {{ Html::script('js/script.js') }}
+
 @endsection

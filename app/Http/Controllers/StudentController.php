@@ -136,8 +136,6 @@ class StudentController extends Controller
         return view('testGrades.studResults')->with('gradeList', $gradeList);
     }
 
-
-
     /**
      * Show the form for editing the specified resource.
      *
@@ -163,24 +161,96 @@ class StudentController extends Controller
     public function update(Request $request, $id)
     {
         $input = $request->all();
-
-
-         $this->validate($request,[
-
-                'student_Pass' => 'required|regex:/^(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]{7,}$/',
-            ]);
-
-        $getDate = $request->input('birthDate');
+       // Log::info($input);
+        $getUserRole = Auth::user()->role;
+       // Log::info($getUserRole);
+        
+        $getDate = $request['birthDate'];
         $getDate = date('Y-m-d', strtotime($getDate));
+        date_default_timezone_set('Asia/Singapore');
 
-        DB::table('student')
-            ->where('studentID', $id)
-            ->update([
-                'studentName' => $request['student_Name'],
-                'birth_Date' => $getDate,
-                'address' => $request['student_address'],
-                'status'  =>$request['student_status']
+        // If Checkbox is TICK
+        if($request->input('validate_Checkbox') === 'enabled_Checkbox'){
+
+            $getPassword = $request['stud_Pass'];
+            
+            $this->validate($request,[
+
+                'stud_Pass' => 'required|regex:/^(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]{7,}$/',
             ]);
+            
+            $hashedPassword = Hash::make($getPassword);
+
+            // Validate Role is Admin/ Hod / Lecturer
+            if($getUser == "Admin" ||  $getUser =="Lecturer" ||  $getUser =="Hod"){
+
+                Log::info('NON Student with Password');
+    
+                DB::table('student')
+                ->where('studentID', $id)
+                ->update([
+                    'studentName' => $request['student_Name'],
+                    'birth_Date' => $getDate,
+                    'address' => $request['student_address'],
+                    'status'  =>$request['student_status'],
+                    'studentPassword' => $hashedPassword,
+                    'password_Date'  => date('Y/m/d')
+                ]);
+
+            }
+            
+            else{
+                Log::info('Student with Password');
+
+                DB::table('student')
+                ->where('studentID', $id)
+                ->update([
+                    'studentName' => $request['student_Name'],
+                    'birth_Date' => $getDate,
+                    'address' => $request['student_address'],
+                    //'status'  =>$request['student_status'],
+                    'studentPassword' => $hashedPassword,
+                    'password_Date'  => date('Y/m/d')
+                ]);
+            }
+
+            DB::table('users')
+            ->where('name', $id)
+            ->update([
+                'password' => $hashedPassword
+            ]);
+
+        }
+        else{
+
+            // Validate Role is Admin/ Hod / Lecturer
+            if($getUserRole == "Admin" || $getUserRole == "Lecturer" || $getUserRole == "Hod"){
+                Log::info(' NON Student w/o Password');
+
+                DB::table('student')
+                ->where('studentID', $id)
+                ->update([
+                    'studentName' => $request['student_Name'],
+                    'birth_Date' => $getDate,
+                    'address' => $request['student_address'],
+                    'status'  =>$request['student_status']
+                ]);
+
+            }
+            else{
+                Log::info('Student w/o Password');
+
+                DB::table('student')
+                ->where('studentID', $id)
+                ->update([
+                    'studentName' => $request['student_Name'],
+                    'birth_Date' => $getDate,
+                    'address' => $request['student_address']
+                    //'status'  =>$request['student_status']
+                ]);
+            }
+            
+        }   
 
         Session::flash('success', 'Updates have been successfully saved!');
         return redirect()->back();

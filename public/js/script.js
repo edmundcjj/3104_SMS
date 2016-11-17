@@ -13,6 +13,7 @@ $( function(){
       maxDate: 0,
       dateFormat: 'dd M yy'
     });
+
   });
 
 $("#eye").mousedown(function(){
@@ -46,4 +47,21 @@ $("#seepass").mousedown(function(){
             }).mouseout(function(){
               $("#stud_Pass").attr('type','password');
             });
+
+$('#lecturer_chkBox').change(function(e){
+  
+  e.preventDefault(); 
+  console.log('lecturer Hi');
+  //$(this).closest('input.form-control').find('#lecturer_Pass').attr('disabled', !this.checked);
+  document.getElementById('lecturer_Pass').disabled = !this.checked;
+  
+});
+
+$('#student_chkBox').change(function(e){
+  
+  e.preventDefault(); 
+  console.log('Student Hi');
+    document.getElementById('stud_Pass').disabled = !this.checked;
+  
+}); 
 

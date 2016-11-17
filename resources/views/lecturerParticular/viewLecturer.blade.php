@@ -15,6 +15,7 @@
 			<thead>
 				<tr>
 				<th>Lecturer Name</th>
+				<th>Lecturer ID</th>
 				<th>NRIC</th>
 				<th>Date of Birth</th>
 				<th>Address</th>
@@ -26,7 +27,8 @@
 			<tbody>
 				@foreach($display_LectList as $lecturer)
 				<tr>
-					<td>{!! $lecturer->lecturerName !!}</td>
+					<td>{!! $lecturer->lecturerName !!}</td>					
+					<td>{!! $lecturer->lecturerID !!}</td>
 					<td>{!! $lecturer->lecturer_Nric !!}</td>
 					<td>{!! $lecturer->birth_Date !!}</td>
 					<td>{!! $lecturer->address !!}</td>
