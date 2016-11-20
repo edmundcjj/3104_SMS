@@ -90,7 +90,7 @@ class StudentController extends Controller
         $getParticulars->studentName = $request->input('studentName');
         $getParticulars->student_Nric =$validateNRIC;
         $getParticulars->studentPassword = $hashedPassword;
-        $getParticulars->password_date = date('Y/m/d');
+        $getParticulars->password_date = date('Y/m/d', strtotime("+90 days"));
         $getParticulars->email = $request->input('student_email');
         
         $getParticulars->birth_Date = $getDate;
@@ -182,7 +182,7 @@ class StudentController extends Controller
             $hashedPassword = Hash::make($getPassword);
 
             // Validate Role is Admin/ Hod / Lecturer
-            if($getUser == "Admin" ||  $getUser =="Lecturer" ||  $getUser =="Hod"){
+            if($getUserRole == "Admin" ||  $getUserRole =="Lecturer" ||  $getUserRole =="Hod"){
 
                 Log::info('NON Student with Password');
     
@@ -194,7 +194,7 @@ class StudentController extends Controller
                     'address' => $request['student_address'],
                     'status'  =>$request['student_status'],
                     'studentPassword' => $hashedPassword,
-                    'password_Date'  => date('Y/m/d')
+                    'password_Date'  => date('Y/m/d', strtotime("+90 days"))
                 ]);
 
             }
@@ -210,7 +210,7 @@ class StudentController extends Controller
                     'address' => $request['student_address'],
                     //'status'  =>$request['student_status'],
                     'studentPassword' => $hashedPassword,
-                    'password_Date'  => date('Y/m/d')
+                    'password_Date'  => date('Y/m/d', strtotime("+90 days"))
                 ]);
             }
 
