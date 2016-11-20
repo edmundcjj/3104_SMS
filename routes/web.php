@@ -73,18 +73,29 @@ Route::resource('reject', 'GradeController@reject');
 
 Route::resource('recommendation', 'GradeController@recommend_index');
 
+//GRADE FUNCTION
+//Lecturer view student grade of a test
 Route::resource('grades_details', 'GradeController@details_index');
-
+//Lecturer edit student grade
+Route::get('grades_details_edit/{resultID}','GradeController@details_edit');
+//Lecturer update student grade
+Route::post('grades_details_update/{resultID}','GradeController@details_update');
+//Lecturer update submit student grade to hod
+Route::get('grades_details_submit/{resultID}','GradeController@details_submit');
+//Hod view test to moderate or publish
+Route::resource('hod_view_grades', 'GradeController@hod_view_index');
+//Hod view specific test grade of Student
 Route::resource('hod_grades_details', 'GradeController@hod_details_index');
-
-//me
+//Hod moderate grade
 Route::get('hod_grades_details_moderate/{testID}','GradeController@moderateGrade');
 Route::post('hod_grades_details_moderate/store/{testID}','GradeController@moderateStore');
+//Hod publish grade
+Route::get('hod_grades_details_publish/{testID}','GradeController@publish');
 
 // Admin update Recommended Grades
 Route::post('updateRecommendation/{id}/{grade}' , ['as' => 'updateRecommendedResults', 'uses' => 'GradeController@updateRecommendedResults'] );
 
-Route::resource('hod_view_grades', 'GradeController@hod_view_index');
+
 
 Route::resource('view_grades', 'GradeController@view_index');
 
@@ -103,7 +114,7 @@ Route::resource('courseParticular', 'hodCourseController');
 Route::get('/home', 'HomeController@index');
 
 
-//HX
+//Module
 Route::get('view_module/{courseID}','ModuleController@view_module');
 Route::get('create_module/{courseID}', 'ModuleController@create');
 Route::post('create_module/store/{courseID}', 'ModuleController@store');

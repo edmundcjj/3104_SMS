@@ -131,8 +131,13 @@ class StudentController extends Controller
     {
         $user_id = Auth::user()->name;
         Log::info($user_id);
-      //  error_log($id);
-        $gradeList = DB::table('result')->join('test', 'result.testID', '=', 'test.testID')->select('result.*', 'test.testName')->where('studentID', '=', $user_id)->get();
+        //  error_log($id);
+        $gradeList = DB::table('result')
+            ->join('test', 'result.testID', '=', 'test.testID')
+            ->select('result.*', 'test.testName')
+            ->where('studentID', '=', $user_id)
+            ->where('status', '=', "Published")
+            ->get();
         return view('testGrades.studResults')->with('gradeList', $gradeList);
     }
 
