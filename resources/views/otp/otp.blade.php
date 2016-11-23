@@ -13,14 +13,18 @@
 		<div class="col-md-4 col-md-offset-4">
 		<h3>An OTP has been sent to your email!</h3>
 		<h4>Enter it in the textbox below: </h4>
+		@include('partials._alertmessage')
+		{!! Form::open(['url' => 'check']) !!}
 		<div style="overflow: hidden;" class="form-group">
-		<div><input class="form-control"  required="required"  name="otp" type="text"></div>
+		<div>
+		{!! Form::text('otpTxt', null, ['class' => 'form-control', 'required']) !!}</div>
 		</div>
 		<div style="text-align: center">
 		<a href="/loginpage" class ="btn btn-danger" style="float: left">Log Out</a>
-		<a href="{{ route('otp.store') }}" class ="btn btn-primary" style="float: center">Resend OTP</a>	
-		<a href="{{ route('otp.create') }}" class ="btn btn-success" style="float: right">Submit</a>
+		<a href="/resend" class ="btn btn-primary" style="float: center">Resend OTP</a>
+		{!! Form::submit('Submit', array('class'=>'btn btn-success', 'style'=>'float:right')) !!}
 		</div>
+		{!! Form::close() !!}
 	</div>
 
 	</div>

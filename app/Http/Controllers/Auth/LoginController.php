@@ -4,13 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
-use App\Http\Requests;
-use App\Course;
-use App\Lecturer;
-use App\Student;
-use Mail;
-use DB;
-use Session;
+
 
 class LoginController extends Controller
 {

@@ -14,6 +14,15 @@
 
 @endif
 
+@if (Session::has('unsuccess_otp'))
+
+	<div class="alert alert-danger" role="alert">
+		<strong>Error:</strong> {{ Session::get('unsuccess_otp') }}
+	</div>
+
+@endif
+
+
  @if ($errors->any())     
  	<div class="alert alert-danger" role="alert"> 
  		<strong>Alert!</strong>
@@ -24,3 +33,4 @@
     		</ul>
    	</div>      
 @endif
+

@@ -73,6 +73,10 @@ Route::resource('reject', 'GradeController@reject');
 
 Route::resource('recommendation', 'GradeController@recommend_index');
 
+Route::post('check', 'OTPController@check_otp');
+
+Route::get('resend', 'OTPController@resend_otp');
+
 Route::resource('otp', 'OTPController');
 
 //GRADE FUNCTION
