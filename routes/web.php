@@ -73,6 +73,8 @@ Route::resource('reject', 'GradeController@reject');
 
 Route::resource('recommendation', 'GradeController@recommend_index');
 
+Route::resource('otp', 'OTPController');
+
 //GRADE FUNCTION
 //Lecturer view student grade of a test
 Route::resource('grades_details', 'GradeController@details_index');
@@ -112,6 +114,10 @@ Route::resource('courseParticular', 'hodCourseController');
 // Route::post('gradeParticular/moderateGrade/store/{testID}','hodGradeController@store');
 
 Route::get('/home', 'HomeController@index');
+
+Route::get('/auth', 'AuthController@index');
+
+Route::get('/loginpage', 'OTPController@otp_fail');
 
 
 //Module
