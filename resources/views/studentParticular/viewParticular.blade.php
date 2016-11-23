@@ -47,8 +47,8 @@
 
 					{!! Form::open(['route'=>['students.destroy',$studentList->studentID], 'method' => 'DELETE', 'style' => 'display:inline']) !!}
                         {!! Form::submit('Delete' , ['class' => 'btn btn-danger', 'style' => 'display:inline'])!!}
-                        {!! Form::close() !!} 
-
+                        {!! Form::close() !!}
+					<td width="220"><a href="{{ url('student_view_gpa', $studentList->studentID) }}" class="btn action btn-info">View GPA</a>
 					</td>
 				</tr>
 				@endforeach

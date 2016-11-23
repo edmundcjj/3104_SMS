@@ -39,8 +39,10 @@
             </div>
             <ul class="nav navbar-nav">
                 <li class="{{ Request::is('execute') ? "active" : "" }}"><a href="/execute_list">Recommendation</a></li>
-                <li class="{{ Request::is('lecturers') ? "active" : "" }}""><a href="/lecturers">Lecturer Particulars</a></li>
-                <li class="{{ Request::is('students') ? "active" : "" }}""><a href="/students">Student Particulars</a></li>
+                <li class="{{ Request::is('lecturers') ? "active" : "" }}"><a href="/lecturers">Lecturer Particulars</a></li>
+                <li class="{{ Request::is('students') ? "active" : "" }}"><a href="/students">Student Particulars</a></li>
+
+                <li class="{{ Request::is('backup') ? "active" : "" }}"><a href="/locked_accounts">Locked Accounts</a></li>
                 <li class="{{ Request::is('course') ? "active" : "" }}"><a href="/course">Course</a></li>
                 <li class="{{ Request::is('archive_students') ? "active" : "" }}"><a href="/archive_students">Archive</a></li>
                 <li class="{{ Request::is('backup') ? "active" : "" }}"><a href="/backup">Backup</a></li>

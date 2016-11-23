@@ -40,6 +40,7 @@
             <ul class="nav navbar-nav">
                 <li class="{{ Request::is('student') ? "active" : "" }}"><a href="/studentparticular">Personal Particular</a></li>
                 <li class="{{ Request::is('grade') ? "active" : "" }}"><a href="/studentresults">Grade</a></li>
+                <li class="{{ Request::is('grade') ? "active" : "" }}"><a href="{{ url('student_view_gpa', Auth::user()->name)}}">GPA</a></li>
             </ul>
 
             <ul class="nav navbar-nav navbar-right">

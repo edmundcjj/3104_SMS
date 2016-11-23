@@ -36,6 +36,10 @@ Auth::routes();
 
 Route::resource('course', 'CourseController');
 
+Route::resource('locked_accounts', 'AdminController@acc_index');
+
+Route::resource('unlock', 'AdminController@unlock_acc');
+
 Route::post('create_Course', 'CourseController@store');
 
 Route::get('course_incharge','CourseController@course_incharge');
@@ -73,13 +77,11 @@ Route::resource('reject', 'GradeController@reject');
 
 Route::resource('recommendation', 'GradeController@recommend_index');
 
-Route::post('check', 'OTPController@check_otp');
-
-Route::get('resend', 'OTPController@resend_otp');
-
-Route::resource('otp', 'OTPController');
-
 //GRADE FUNCTION
+//Student view gpa
+//Route::resource('student_view_gpa', 'GradeController@compute_gpa');
+Route::get('student_view_gpa/{studentID}','GradeController@compute_gpa');
+
 //Lecturer view student grade of a test
 Route::resource('grades_details', 'GradeController@details_index');
 //Lecturer edit student grade
@@ -101,6 +103,10 @@ Route::get('hod_grades_details_publish/{testID}','GradeController@publish');
 // Admin update Recommended Grades
 Route::post('updateRecommendation/{id}/{grade}' , ['as' => 'updateRecommendedResults', 'uses' => 'GradeController@updateRecommendedResults'] );
 
+// Admin backup application
+Route::resource('backup', 'AdminController@index');
+Route::get('backup_application','AdminController@backupApplication');
+Route::get('backup_database','AdminController@backupDatabase');
 
 
 Route::resource('view_grades', 'GradeController@view_index');
@@ -117,11 +123,13 @@ Route::resource('courseParticular', 'hodCourseController');
 
 // Route::post('gradeParticular/moderateGrade/store/{testID}','hodGradeController@store');
 
-Route::get('/home', 'HomeController@index');
+Route::get('home', 'HomeController@index');
 
-Route::get('/auth', 'AuthController@index');
+Route::post('check', 'HomeController@check_otp');
 
-Route::get('/loginpage', 'OTPController@otp_fail');
+Route::get('resend', 'HomeController@resend_otp');
+
+Route::resource('log_out', 'HomeController@otp_fail');
 
 
 //Module

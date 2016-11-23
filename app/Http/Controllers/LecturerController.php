@@ -152,7 +152,8 @@ class LecturerController extends Controller
         $getDate = date('Y-m-d', strtotime($getDate));
 
         date_default_timezone_set('Asia/Singapore');
-
+        $s = $request->input('lect_Checkbox');
+        error_log($s);
         // Validate for a change in Password
         if($request->input('lect_Checkbox') === 'enabled_Checkbox'){
 
