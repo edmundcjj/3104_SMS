@@ -91,6 +91,8 @@ class ModuleController extends Controller
         $insert_Module->moduleName = $validate_moduleName;
         $insert_Module->courseID = $request->input('module_course');
         $insert_Module->lecturerID = $request->input('module_lecturer');
+        $insert_Module->credit_Unit = $request->input('module_credit');
+        $insert_Module->trimester = $request->input('module_trimester');
         $insert_Module->save();
 
         return redirect()->intended('view_module/'.$request->input('module_course'))->with('message', 'Module have been added successfully!');

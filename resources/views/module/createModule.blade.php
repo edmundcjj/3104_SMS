@@ -16,6 +16,8 @@
                     <th>Module ID</th>
                     <th>Module Name</th>
                     <th>Lecturer In-Charge</th>
+                    <th>Credit Unit</th>
+                    <th>Trimester</th>
                     <th width="50px"> </th>
                 </tr>
 
@@ -35,6 +37,14 @@
                                 <option value="{{ $lecturer->lecturerID }}">{{ $lecturer->lecturerName }}</option>
                             @endforeach
                         </select>
+                    </td>
+
+                    <td>
+                        {!! Form::text('module_credit', null, ['required', 'placeholder' => 'Enter Module Credit' ,'class' => 'form-control']) !!}
+                    </td>
+
+                    <td>
+                        {!! Form::text('module_trimester', null, ['required', 'placeholder' => 'Enter Module Trimester' ,'class' => 'form-control']) !!}
                     </td>
 
                     {{ Form::hidden('module_course', $retrieveid) }}
