@@ -30,16 +30,13 @@
 		<div class="form-group">
 		{!! Form::label('lect_Pass', 'Password:') !!}
 		<div class="input-group input-group-unstyled">
-		<!-- <input class="form-control" type="password"  name="lect_Pass" id="lect_Pass" placeholder="Enter Password" value="{ !!$lecturer->lecturerPassword!!}"> -->
-
-		<input class="form-control" type="password"  name="lecturer_Password" id="lecturer_Pass" placeholder="Enter New Password" disabled>
+		 <input class="form-control" type="password"  name="lect_Pass" id="lect_Pass" placeholder="Enter Password" value="{ !!$lecturer->lecturerPassword!!}"> 
 
 		<span class="input-group-addon">
 		<i class="glyphicon glyphicon-eye-open" name="seelectpass" id="seelectpass"></i>
 		</span>
 		</div>
 
-		<input type="checkbox" name="lect_Checkbox" id="lecturer_chkBox" value="enabled_Checkbox" ><b> Change Password </b> <br>
 		</div>
 
 		<div class="form-group">
@@ -52,7 +49,7 @@
 			{!! Form::text('address', $lecturer->address, ['required' ,'class' => 'form-control', 'placeholder' => 'Enter Address']) !!}
 		</div>
 
-		@if(Auth::user()->name == "Admin")
+		@if(Auth::user()->role == "Admin")
 		<div class="form-group">
 				{!! Form::label('position', 'Status:') !!}
 				{!! Form::select('position', array( 'HOD' => 'HOD'  ,'Staff' => 'Staff'), null, [ 'class' => 'form-control', 'readonly','style' => 'width:200px'] )  !!}
@@ -60,7 +57,7 @@
 		@endif
 
 		<center>
-		@if(Auth::user()->name == "Admin")
+		@if(Auth::user()->role == "Admin")
 		<a href="{{ route('lecturers.index') }}" class="btn btn-default">Back</a>
 		@else
 		<a href="{{ url('home') }}" class="btn btn-default">Back</a>

@@ -60,11 +60,11 @@ class CourseController extends Controller
         $validate_CourseName = $request->input('course_name');
 
         if(Course::where('courseID', '=', $validate_CourseID )->exists()){
-            Session::flash('unsuccess_ID', 'Course ID exists! Please enter a different ID.');
+            Session::flash('unsuccess', 'Course ID exists! Please enter a different ID.');
             return redirect()->back();
         }
         else if(Course::where('courseName', '=', $validate_CourseName )->exists()){
-            Session::flash('unsuccess_Name', 'CourseName exists! Please enter a different Course Name.' );
+            Session::flash('unsuccess', 'CourseName exists! Please enter a different Course Name.' );
             return redirect()->back();
         }
 
@@ -143,7 +143,7 @@ class CourseController extends Controller
         {
         // Validate for duplicate Course Name in other rows
         if(Course::where('courseID', '!=', $course->courseID )->where('courseName', $validate_CourseName)->exists() ){
-                 Session::flash('unsuccess_Name', 'Duplicate Course Name exists! Please use another Course Name.' );
+                 Session::flash('unsuccess', 'Duplicate Course Name exists! Please use another Course Name.' );
                  
                 return redirect()->back(); 
             }
@@ -173,7 +173,7 @@ class CourseController extends Controller
         // Verify if there are Student still in this Course
         if(Student::where('courseID', '=', $course_id)->count() > 0)
         {
-            Session::flash('unsuccess_Delete', 'Course cannot be Deleted! There are still Students enrolled in this Course!' );
+            Session::flash('nsuccess', 'Course cannot be Deleted! There are still Students enrolled in this Course!' );
             return redirect()->back();
         }
 

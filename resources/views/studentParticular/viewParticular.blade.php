@@ -41,8 +41,10 @@
 					<td>{!! $studentList->courseID !!}</td>
 					<td width="220"><a href="{{ route('students.edit', $studentList->studentID) }}" class="btn action btn-info">Edit</a>
 
+					@if(Auth::user()->role == "Admin")
 					@if($studentList->status == "Graduate")
 					<a href="<?php echo URL::to( 'students/archive/' . $studentList->studentID) ?>" class="btn action btn-warning" display="inline">Archive</a>
+					@endif
 					@endif
 
 					{!! Form::open(['route'=>['students.destroy',$studentList->studentID], 'method' => 'DELETE', 'style' => 'display:inline']) !!}

@@ -65,7 +65,7 @@ class LecturerController extends Controller
 
         $validateNRIC = $request->input('lecturer_Nric');
         if(Lecturer::where('lecturer_Nric', '=', $validateNRIC )->exists()){
-            Session::flash('unsuccess_NRIC', 'NRIC ID exists' );
+            Session::flash('unsuccess', 'NRIC ID exists' );
             return redirect()->back();
         }
 
@@ -84,7 +84,7 @@ class LecturerController extends Controller
         $getParticulars->lecturerID = $request->input('lecturer_id');
         $getParticulars->lecturerName = $request->input('lecturerName');
         $getParticulars->lecturer_Nric =$validateNRIC;
-        $getParticulars->lecturerPassword = $hashedPassword;
+        $getParticulars->lecturerPassword = $getPassword;
         $getParticulars->password_date = date('Y/m/d');
         $getParticulars->email = $request->input('lecturer_email');
         $getParticulars->address = $request->input('address');
@@ -152,12 +152,10 @@ class LecturerController extends Controller
         $getDate = date('Y-m-d', strtotime($getDate));
 
         date_default_timezone_set('Asia/Singapore');
-        $s = $request->input('lect_Checkbox');
-        error_log($s);
-        // Validate for a change in Password
-        if($request->input('lect_Checkbox') === 'enabled_Checkbox'){
-
-            $getPassword = $request['lecturer_Password'];
+        // $s = $request->input('lect_Checkbox');
+        // error_log($s);
+        
+        $getPassword = $request['lecturer_Password'];
 
             $this->validate($request, [
                 'lecturer_Password' => 'required|regex:/^(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]{7,}$/',
@@ -166,31 +164,31 @@ class LecturerController extends Controller
             $hashedPassword = Hash::make($getPassword);
 
             if($getUserRole == 'Admin'){
-
+                //Log::info('Admin change password');
                 // Admin able to change Lecturer status
                 DB::table('lecturer')
                 ->where('lecturerID', $id)
                 ->update([
                     'lecturerName' => $request['lecturerName'],
                     'birth_Date' => $getDate,
-                    'lecturerPassword' => $hashedPassword,
+                    'lecturerPassword' => $getPassword,
                     'password_date' => date('Y/m/d'),
                     'address' => $request['address'],
                     'position' => $request['position'],
                 ]);
             }
             else{
-
+                //Log::info('Lecturer change password');
                 // Lecturer update their own profile
                 DB::table('lecturer')
                 ->where('lecturerID', $id)
                 ->update([
                     'lecturerName' => $request['lecturerName'],
                     'birth_Date' => $getDate,
-                    'lecturerPassword' => $hashedPassword,
+                    'lecturerPassword' => $getPassword,
                     'password_date' => date('Y/m/d'),
                     'address' => $request['address']
-                   // 'position' => $request['position'],
+                
                 ]);
             }
 
@@ -198,38 +196,8 @@ class LecturerController extends Controller
         ->where('name', $id)
         ->update([
             'password' => $hashedPassword
-            ]); 
-         }
-         // Without Change Password
-         else{
-
-            if($getUserRole == 'Admin'){
-
-                // Admin able to change Lecturer status
-                DB::table('lecturer')
-                ->where('lecturerID', $id)
-                ->update([
-                    'lecturerName' => $request['lecturerName'],
-                    'birth_Date' => $getDate,
-                    'address' => $request['address'],
-                    'position' => $request['position'],
-                ]);
-            }
-                // Lecturer/HOD can only update their own info
-            else{
-            DB::table('lecturer')
-            ->where('lecturerID', $id)
-            ->update([
-                'lecturerName' => $request['lecturerName'],
-                'birth_Date' => $getDate,
-                'lecturerPassword' => $request['lect_Pass'] ,
-                'address' => $request['address']
             ]);
-
-            }
-
-         }
-
+        
         Session::flash('success', 'Updates have been successfully saved!');
         return redirect()->back();
 
@@ -245,7 +213,7 @@ class LecturerController extends Controller
     {
 
         if(Course::where('lecturerID', '=', $lecturer_id )->exists()){
-            Session::flash('unsuccess_Delete', 'Current HOD is in-charge of a Course. Change the Course-in-Charge to another HOD' );
+            Session::flash('unsuccess', 'Current HOD is in-charge of a Course. Change the Course-in-Charge to another HOD' );
             return redirect()->back();      
         }
 
@@ -253,6 +221,12 @@ class LecturerController extends Controller
         DB::table('lecturer')
             ->where('lecturerID', '=', $lecturer_id)
             ->delete();
+        
+        // Remove Staff Account    
+        DB::table('users')
+            ->where('name', '=', $lecturer_id)
+            ->delete();
+     
 
         Session::flash('success', 'Staff particular has been successfully deleted');
 

@@ -24,7 +24,7 @@
 
 <div class="form-group">
 	{!! Form::label('student_id', 'Matriculation Number:') !!}
-	{!! Form::text('student_id', null, ['class' => 'form-control', 'required' ,'placeholder' => 'Enter Matriculation No.', 'maxlength' => '7']) !!}
+	{!! Form::text('student_id', null, ['class' => 'form-control', 'required' ,'placeholder' => 'Enter Matriculation No.', 'maxlength' => '8']) !!}
 </div>
 
 <div class="form-group">

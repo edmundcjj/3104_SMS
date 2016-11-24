@@ -48,6 +48,12 @@ Route::resource('students', 'StudentController');
 
 Route::resource('studentparticular', 'StudentController@edit_student');
 
+// Display Password Grace Period
+Route::get('user_account', 'AdminController@viewAccountList');
+
+// Send Email Reminder
+Route::get('/sendEmail/{name}/{email}', 'AdminController@sendReminder');
+
 // Archive Student Records
 Route::get('/students/archive/{id}', 'StudentController@archive_student');
 

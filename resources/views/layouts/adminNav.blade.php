@@ -45,6 +45,7 @@
                 <li class="{{ Request::is('backup') ? "active" : "" }}"><a href="/locked_accounts">Locked Accounts</a></li>
                 <li class="{{ Request::is('course') ? "active" : "" }}"><a href="/course">Course</a></li>
                 <li class="{{ Request::is('archive_students') ? "active" : "" }}"><a href="/archive_students">Archive</a></li>
+                <li class="{{ Request::is('user_account') ? "active" : "" }}"><a href="/user_account">User Account</a></li>
                 <li class="{{ Request::is('backup') ? "active" : "" }}"><a href="/backup">Backup</a></li>
             </ul>
 

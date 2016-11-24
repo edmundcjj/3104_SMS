@@ -26,12 +26,28 @@ class StudentController extends Controller
     public function index()
     {
 
-        // Select * FROM students S,course C Where S.courseID = C.courseID
-        $display_StudentList = DB::table('student')
+        $getUserName = Auth::user()->name;
+        $getUserRole = Auth::user()->role;
+        Log::info($getUserName);
+        Log::info($getUserRole);
+
+        if($getUserRole == "Admin")
+        {
+            // Select * FROM students S,course C Where S.courseID = C.courseID
+            $display_StudentList = DB::table('student')
             ->join('course', 'student.courseID', '=', 'course.courseID')
             ->orderBy('studentName', 'asc')
             //->get()
             ->paginate(50);
+        }
+        else if($getUserRole == "Lecturer" || $getUserRole == "Hod")
+        {
+            $display_StudentList = DB::table('student')
+                ->join('course', 'student.courseID', '=', 'course.courseID')
+                ->where('course.lecturerID', '=', $getUserName)
+                ->orderBy('course.courseName' ,'asc')
+                ->paginate(50);
+        }
 
         return view('studentParticular.viewParticular')->with('displayStudentList', $display_StudentList);
     }
@@ -70,7 +86,7 @@ class StudentController extends Controller
         // // error_log("what up ");
         $validateNRIC = $request->input('studentNRIC');
         if(Student::where('student_Nric', '=', $validateNRIC )->exists()){
-            Session::flash('unsuccess_NRIC', 'NRIC ID exists' );
+            Session::flash('unsuccess', 'NRIC ID exists' );
             return redirect()->back();
         }
         $getDate = $request->input('birthDate');
@@ -89,8 +105,8 @@ class StudentController extends Controller
         $getParticulars->studentID = $request->input('student_id');
         $getParticulars->studentName = $request->input('studentName');
         $getParticulars->student_Nric =$validateNRIC;
-        $getParticulars->studentPassword = $hashedPassword;
-        $getParticulars->password_date = date('Y/m/d', strtotime("+90 days"));
+        $getParticulars->studentPassword = $getPassword;
+        $getParticulars->password_date = date('Y/m/d');
         $getParticulars->email = $request->input('student_email');
         
         $getParticulars->birth_Date = $getDate;
@@ -174,10 +190,7 @@ class StudentController extends Controller
         $getDate = date('Y-m-d', strtotime($getDate));
         date_default_timezone_set('Asia/Singapore');
 
-        // If Checkbox is TICK
-        if($request->input('validate_Checkbox') === 'enabled_Checkbox'){
-
-            $getPassword = $request['stud_Pass'];
+                   $getPassword = $request['stud_Pass'];
             
             $this->validate($request,[
 
@@ -189,8 +202,7 @@ class StudentController extends Controller
             // Validate Role is Admin/ Hod / Lecturer
             if($getUserRole == "Admin" ||  $getUserRole =="Lecturer" ||  $getUserRole =="Hod"){
 
-                Log::info('NON Student with Password');
-    
+                //Log::info('NON Student with Password');
                 DB::table('student')
                 ->where('studentID', $id)
                 ->update([
@@ -198,14 +210,13 @@ class StudentController extends Controller
                     'birth_Date' => $getDate,
                     'address' => $request['student_address'],
                     'status'  =>$request['student_status'],
-                    'studentPassword' => $hashedPassword,
-                    'password_Date'  => date('Y/m/d', strtotime("+90 days"))
+                    'studentPassword' => $getPassword,
+                    'password_Date'  => date('Y/m/d')
                 ]);
-
             }
             
             else{
-                Log::info('Student with Password');
+                //Log::info('Student with Password');
 
                 DB::table('student')
                 ->where('studentID', $id)
@@ -213,9 +224,8 @@ class StudentController extends Controller
                     'studentName' => $request['student_Name'],
                     'birth_Date' => $getDate,
                     'address' => $request['student_address'],
-                    //'status'  =>$request['student_status'],
-                    'studentPassword' => $hashedPassword,
-                    'password_Date'  => date('Y/m/d', strtotime("+90 days"))
+                    'studentPassword' => $getPassword,
+                    'password_Date'  => date('Y/m/d')
                 ]);
             }
 
@@ -224,39 +234,7 @@ class StudentController extends Controller
             ->update([
                 'password' => $hashedPassword
             ]);
-
-        }
-        else{
-
-            // Validate Role is Admin/ Hod / Lecturer
-            if($getUserRole == "Admin" || $getUserRole == "Lecturer" || $getUserRole == "Hod"){
-                Log::info(' NON Student w/o Password');
-
-                DB::table('student')
-                ->where('studentID', $id)
-                ->update([
-                    'studentName' => $request['student_Name'],
-                    'birth_Date' => $getDate,
-                    'address' => $request['student_address'],
-                    'status'  =>$request['student_status']
-                ]);
-
-            }
-            else{
-                Log::info('Student w/o Password');
-
-                DB::table('student')
-                ->where('studentID', $id)
-                ->update([
-                    'studentName' => $request['student_Name'],
-                    'birth_Date' => $getDate,
-                    'address' => $request['student_address']
-                    //'status'  =>$request['student_status']
-                ]);
-            }
-            
-        }   
-
+       
         Session::flash('success', 'Updates have been successfully saved!');
         return redirect()->back();
 
@@ -277,14 +255,19 @@ class StudentController extends Controller
             DB::table('students')
             ->where('studentID', $getStudentID)
             ->delete();
-
+            
+            // Remove Student Account
+            DB::table('users')
+                ->where('name', $getStudentID)
+                ->delete();
+                
             Session::flash('success', 'Student particular has been successfully deleted');
 
             return redirect()->route('students.index');
 
         }
         else{
-            Session::flash('unsuccess_Delete', 'Student is still enrolled to a Course' );
+            Session::flash('unsuccess', 'Student is still enrolled to a Course' );
             return redirect()->back();
         }
     }

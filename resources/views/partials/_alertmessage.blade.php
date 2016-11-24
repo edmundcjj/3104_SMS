@@ -6,10 +6,10 @@
 	
 @endif
 
-@if (Session::has('unsuccess_NRIC'))
+@if (Session::has('unsuccess'))
 
 	<div class="alert alert-danger" role="alert">
-		<strong>Error:</strong> {{ Session::get('unsuccess_NRIC') }}
+		<strong>Error:</strong> {{ Session::get('unsuccess') }}
 	</div>
 
 @endif

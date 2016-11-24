@@ -25,15 +25,15 @@ f+@extends('home')
 
 		<div class="form-group">
 			{!! Form::label('student_id', 'Matriculation Number:', ['class' => 'control-label']) !!}
-			{!! Form::text('student_id', $editStudent->studentID, ['class' => 'form-control', 'readonly' ,'placeholder' => 'Enter Matriculation No.', 'maxlength' => '7']) !!}
+			{!! Form::text('student_id', $editStudent->studentID, ['class' => 'form-control', 'readonly' ,'placeholder' => 'Enter Matriculation No.', 'maxlength' => '8']) !!}
 		</div>
 
 		<div class="form-group">
 		{!! Form::label('stud_Pass', 'Password:') !!}
 		<div class="input-group input-group-unstyled">
 
-		<!--
-		<input class="form-control" type="password"  name="stud_Pass" id="stud_Pass" placeholder="Enter Password" value="{ !!$editStudent->studentPassword!!}"> -->
+		
+		<input class="form-control" type="password"  name="stud_Pass" id="stud_Pass" placeholder="Enter Password" value="{ !!$editStudent->studentPassword!!}"> 
 
 		<input class="form-control" type="password"  name="stud_Pass" id="stud_Pass" placeholder="Enter New Password" disabled>
 		<span class="input-group-addon">
@@ -41,7 +41,7 @@ f+@extends('home')
 		</span>
 		</div>
 		
-		 <input type="checkbox" name="validate_Checkbox" id="student_chkBox" value="enabled_Checkbox" ><b> Change Password </b> <br>
+		 <!--<input type="checkbox" name="validate_Checkbox" id="student_chkBox" value="enabled_Checkbox" ><b> Change Password </b> <br>-->
 		 
 		</div>
 
@@ -55,14 +55,14 @@ f+@extends('home')
 			{!! Form::text('student_address', $editStudent->address, ['required' ,'class' => 'form-control', 'placeholder' => 'Enter Address']) !!}
 		</div>
 
-		@if(Auth::user()->name == "Admin")
+		@if(Auth::user()->role == "Admin" || Auth::user()->role == "Hod" || Auth::user()->role == "Lecturer")
 		<div>
 			{!! Form::label('student_status', 'Status:') !!}
 			{!! Form::select('student_status' ,array( 'Default' =>$editStudent->status,  'Pre Enroll' => 'Pre Enroll', 'Enroll' => 'Enroll', 'Graduate' => 'Graduate', 'Expel' => 'Expel' ), null, ['style' => 'width:200px'] )  !!}
 		</div>
 		@endif
 
-		@if(Auth::user()->name == "Admin")
+		@if(Auth::user()->role == "Admin" || Auth::user()->role == "Hod" || Auth::user()->role == "Lecturer")
 		<center><a href="{{ route('students.index') }}" class="btn btn-default">Back</a>
 		@else
 		<a href="{{ url('home') }}" class="btn btn-default">Back</a>

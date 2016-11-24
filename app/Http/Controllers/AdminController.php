@@ -14,42 +14,44 @@ use Log;
 
 class AdminController extends Controller
 {
-//    public function viewAccountList()
-//    {
-//    	$getDate = date('Y-m-d');
-//    	Log::info($getDate);
-//
-//        // Retrieve all Student User
-//    	$getStudentAccount = DB::table('student')
-//    							->join('users','users.name' ,'=', 'student.studentID')
-//    							->get();
-//
-//    	// foreach($getStudentAccount as $get_S)
-//    	// {
-//    	// 	Log::info($get_S->password_date);
-//    	// 	$hi = (strtotime($get_S->password_date) - strtotime($getDate))/(86400);
-//    	// 	Log::info($hi);
-//    	// }
-//
-//        // Retrieve all Lecturer User
-//    	$getLecturerAccount = DB::table('lecturer')
-//    							->join('users','users.name', '=', 'lecturer.lecturerID')
-//    							->get();
-//
-//
-//    	return view('adminTask.accountList')->with('studentAcc', $getStudentAccount)->with('lecturerAcc', $getLecturerAccount)->with('currentDate', $getDate);
-//
-//    }
-//
-//
-//    public function sendReminder($getName)
-//    {
-//
-//        Log::info($getName);
-//
-//        Log::info('hi');
-//        return ('hi');
-//    }
+   public function viewAccountList()
+   {
+   	$getDate = date('Y-m-d');
+   //	Log::info($getDate);
+
+       // Retrieve all Student User
+   	$getStudentAccount = DB::table('student')
+   							->join('users','users.name' ,'=', 'student.studentID')
+   							->get();
+
+       // Retrieve all Lecturer User
+   	$getLecturerAccount = DB::table('lecturer')
+   							->join('users','users.name', '=', 'lecturer.lecturerID')
+   							->get();
+
+
+   	return view('Admin.accountList')->with('studentAcc', $getStudentAccount)->with('lecturerAcc', $getLecturerAccount)->with('currentDate', $getDate);
+
+   }
+
+
+   public function sendReminder($getName, $getEmail)
+    {
+       // Log::info($getEmail);
+         $data = array(
+        'name' => $getName,
+        );
+
+        Mail::send('Admin.reminder', $data, function ($message) use ($getEmail) {
+        $message->from('no-reply@edutech.com', 'Admin');
+        $message->to($getEmail)->subject('Notification to change Password');
+    });
+      
+        Session::flash('success', 'Email Reminder have been send!');
+
+       // return redirect()->route('user_account.index');
+        return redirect()->back();
+    }
 
     public function index(){
          return view('Admin.backupOperation');
