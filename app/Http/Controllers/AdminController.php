@@ -11,26 +11,27 @@ use App\Lecturer;
 use Auth;
 use DB;
 use Log;
+use Session;
 
 class AdminController extends Controller
 {
-   public function viewAccountList()
+  public function viewAccountList()
    {
-   	$getDate = date('Y-m-d');
-   //	Log::info($getDate);
+    $getDate = date('Y-m-d');
+   //   Log::info($getDate);
 
        // Retrieve all Student User
-   	$getStudentAccount = DB::table('student')
-   							->join('users','users.name' ,'=', 'student.studentID')
-   							->get();
+    $getStudentAccount = DB::table('student')
+                            ->join('users','users.name' ,'=', 'student.studentID')
+                            ->get();
 
        // Retrieve all Lecturer User
-   	$getLecturerAccount = DB::table('lecturer')
-   							->join('users','users.name', '=', 'lecturer.lecturerID')
-   							->get();
+    $getLecturerAccount = DB::table('lecturer')
+                            ->join('users','users.name', '=', 'lecturer.lecturerID')
+                            ->get();
 
 
-   	return view('Admin.accountList')->with('studentAcc', $getStudentAccount)->with('lecturerAcc', $getLecturerAccount)->with('currentDate', $getDate);
+    return view('Admin.accountList')->with('studentAcc', $getStudentAccount)->with('lecturerAcc', $getLecturerAccount)->with('currentDate', $getDate);
 
    }
 
@@ -76,6 +77,7 @@ class AdminController extends Controller
     }
 
     public function acc_index(){
+        Session::forget('success_unlock');
         $display_accList = DB::table('users')
         ->where('status','=', 'locked')
         ->orderBy('name', 'asc')
@@ -85,11 +87,10 @@ class AdminController extends Controller
     }
 
     public function unlock_acc($uid){
-        $display_accList = DB::table('users')
-        ->where('status','=', 'locked')
-        ->orderBy('name', 'asc')
-        ->paginate(50);
-        return view('Admin.locked_account')->with('display_accList', $display_accList);
+        Session::flash('success_unlock', $uid.'\'s account has been unlocked!');
+        error_log($uid);
+        DB::table('users')->where('name',$uid)->update(['status'=>'open']);
+        return view('unlockresult');
 
     }
 

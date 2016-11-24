@@ -32,3 +32,19 @@
 	</div>
 
 @endif
+
+@if (Session::has('account_locked'))
+
+	<div class="alert alert-danger" role="alert">
+		<strong>Error:</strong> {{ Session::get('account_locked') }}
+	</div>
+
+@endif
+
+@if (Session::has('success_unlock'))
+
+	<div class="alert alert-success" role="alert">
+		<strong>Success:</strong> {{ Session::get('success_unlock') }}
+	</div>
+	
+@endif

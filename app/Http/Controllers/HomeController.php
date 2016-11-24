@@ -36,24 +36,35 @@ class HomeController extends Controller
         $email = '';
         error_log($type);
 
+        $as = DB::table('users')->where('name', $uid)->pluck('status');
+        $acc_status = $as->first();
+        if(strcmp($acc_status, 'locked')==0){
+            Session::flash('account_locked', 'Your account has been locked! Please contact your administrator for more information.' );
+            Auth::logout();
+            return view('auth.login');
+        }
 
         if(strcmp($type, 'ST')==0){
             $oldDate = DB::table('student')->where('studentID', $uid)->pluck('password_date');
             $mytime = Carbon\Carbon::now();
             $getDate = date('Y-m-d', strtotime($mytime));
             if($oldDate->first() > $getDate){
+                Session::flash('account_locked', 'Your account has been locked! Please contact your administrator for more information.' );
                 DB::table('users')->where('name',$uid)->update(['status'=>'locked']);
                 error_log('locked');
                 Auth::logout();
                 return view('auth.login');
             }
+            error_log('message');
             return view('home');
         }
         elseif(strcmp($type, 'LT')==0){
+
             $oldDate = DB::table('student')->where('studentID', $uid)->pluck('password_date');
             $mytime = Carbon\Carbon::now();
             $getDate = date('Y-m-d', strtotime($mytime));
             if($oldDate->first() > $getDate){
+                Session::flash('account_locked', 'Your account has been locked! Please contact your administrator for more information.' );
                 DB::table('users')->where('name',$uid)->update(['status'=>'locked']);
                 Auth::logout();
                 error_log('locked');

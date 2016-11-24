@@ -40,6 +40,10 @@ Route::resource('locked_accounts', 'AdminController@acc_index');
 
 Route::resource('unlock', 'AdminController@unlock_acc');
 
+Route::get('user_account', 'AdminController@viewAccountList');
+
+Route::get('/sendEmail/{name}/{email}', 'AdminController@sendReminder');
+
 Route::post('create_Course', 'CourseController@store');
 
 Route::get('course_incharge','CourseController@course_incharge');
@@ -47,12 +51,6 @@ Route::get('course_incharge','CourseController@course_incharge');
 Route::resource('students', 'StudentController');
 
 Route::resource('studentparticular', 'StudentController@edit_student');
-
-// Display Password Grace Period
-Route::get('user_account', 'AdminController@viewAccountList');
-
-// Send Email Reminder
-Route::get('/sendEmail/{name}/{email}', 'AdminController@sendReminder');
 
 // Archive Student Records
 Route::get('/students/archive/{id}', 'StudentController@archive_student');

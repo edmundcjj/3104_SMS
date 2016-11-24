@@ -49,7 +49,7 @@
 			<td> <input class="form-control" required="required" name="studentID[]" type="text" value="{!! $class->studentID !!}" readonly>
 			<input class="form-control" required="required" name="moduleID" type="hidden" value="{!! $mid !!}"></td>
 			<td>{!! Form::text('grade[]', null, ['class' => 'form-control', 'required']) !!}</td>
-			<td>{!! Form::text('feedback[]', ' ', ['class' => 'form-control']) !!}</td>
+			<td>{!! Form::text('feedback[]', null, ['class' => 'form-control']) !!}</td>
 		</tr>
 		@endforeach
 		</table>

@@ -3,22 +3,23 @@
 @section('stylesheet')
 
 @section('content')
-
-<div class="row">
-
-	<div class="col-md-4 col-md-offset-4">
-
-	<h4> Locked Account List </h4>
-	<div class="table-responsive">
+	
+	<div class="container">
+    <div class="row">
+        <div class="col-md-4 col-md-offset-4">
+            <div class="panel panel-default" style="text-align: center;">
+                <div class="panel-heading">	<h4> Locked Account List </h4></div>
+                <div class="panel-body">
+                		<div class="table-responsive" >
 		<table class="table table-condensed">
-			<thead>
+			<thead align="centre">
 				<tr>
-                    <th>Name</th>
-                	<th>Option Tasks</th>
+                    <th >Name</th>
+                	<th >Option Tasks</th>
                 </tr>
 			</thead>
 
-			<tbody>
+			<tbody align="left">
 				@foreach($display_accList as $acc)
 				<tr>
 					<td>{!! $acc->name !!}</td>
@@ -28,8 +29,12 @@
 			</tbody>
 		</table>
 	</div> <!-- End of Table Responsive -->
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-</div> <!-- End of Row -->
+
 
 
 @endsection

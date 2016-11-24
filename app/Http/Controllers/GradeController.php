@@ -17,8 +17,7 @@ use DB;
 use Hash;
 use Session;
 use Log;
-use App\Result;
-use Crypt;
+use Carbon;
 
 class GradeController extends Controller
 {
@@ -33,83 +32,25 @@ class GradeController extends Controller
         $hodID = Auth::user()->name;
         $cid = DB::table('course')->where('lecturerID', $hodID)->pluck('courseID');
         $recommendList = DB::table('result')
-            ->join('test', 'result.testID', '=', 'test.testID')
-            ->join('module', 'result.moduleID', '=', 'module.moduleID')
-            ->select('result.*', 'test.testName', 'module.courseID')
-            ->whereNotNull('recommendation')
-            ->where('recommendResult', 'Pending')
-            ->where('courseID', $cid->first())
-            ->get();
+        ->join('test', 'result.testID', '=', 'test.testID')
+        ->join('module', 'result.moduleID', '=', 'module.moduleID')
+        ->select('result.*', 'test.testName', 'module.courseID')
+        ->whereNotNull('recommendation')
+        ->where('recommendResult', 'Pending')
+        ->where('courseID', $cid->first())
+        ->get();
         error_log($recommendList);
         return view('testGrades.recommendation')->with('recommendList', $recommendList);
     }
 
-    // Admin view Recommended List
     public function execute_list()
     {
-        // error_log('exe!');
-        // $recommendList = DB::table('result')
-        // ->join('test', 'result.testID', '=', 'test.testID')
-        // ->select('result.*', 'test.testName')
-        // ->whereIn('recommendResult', ['Approve', 'Reject'])->get();
-
+        error_log('exe!');
         $recommendList = DB::table('result')
-            ->join('student', 'result.studentID', '=', 'student.studentID')
-            ->join('module', 'result.moduleID', '=', 'module.moduleID' )
-            ->join('course', 'student.courseID', '=', 'course.courseID')
-            ->join('test','result.testID', '=', 'test.testID')
-            //->where('result.recommendation', '!=', ' ')
-            ->where('result.recommendResult', 'Approved')
-            ->orderBy('result.moduleID', 'asc')
-            ->get();
-
-
-
+        ->join('test', 'result.testID', '=', 'test.testID')
+        ->select('result.*', 'test.testName')
+        ->whereIn('recommendResult', ['Approve', 'Reject'])->get();
         return view('testGrades.executeRecommendList')->with('recommendList', $recommendList);
-    }
-
-    // Admin update of Marks
-    public function updateRecommendedResults(Request $request, $result_id, $currentGrade)
-    {
-
-        $newInputValue = $request->input('newResultValue');
-
-        // Current mark + New mark
-        $currentGrade = $currentGrade + $newInputValue;
-        // Log::info($currentGrade);
-
-        // Validate if the Updated Grade is above 100 marks
-        if($currentGrade > 100){
-            $currentGrade = 100;
-        }
-
-        // Update of Grade changes and result status.
-        DB::table('result')
-            ->where('resultID', $result_id)
-            ->update(['grade' =>  $currentGrade,
-                'recommendResult' =>'Updated' ]);
-
-        $testID = DB::table('result')->where('resultID', $result_id)->pluck('testID');
-
-        //check whether there are any more recommendation
-        $checkRecommendation = DB::table('result')
-            ->where('testID', '=', $testID)
-            ->where('recommendResult', '=', "Approved")
-            ->get();
-
-
-        if ( $checkRecommendation ->isEmpty() )
-        {
-            //no recommendation
-            DB::table('test')
-                ->where('testID', $testID)
-                ->update(['status' => "Updated"]);
-        }
-
-        Session::flash('success', 'Adding of marks have been updated!');
-
-        return redirect('execute_list');
-
     }
 
     public function executeapprove($rid)
@@ -129,12 +70,11 @@ class GradeController extends Controller
         Session::flash('success', 'Executed Recommendation for '.$sid->first().'!');
         return view('testGrades.execute');
     }
-//
+
     public function approve($rid)
     {
         error_log('Approved!');
-        DB::table('result')->where('resultID', $rid)->update(['recommendResult'=>'Approved']);
-
+        DB::table('result')->where('resultID', $rid)->update(['recommendResult'=>'Approve']);
         $sid = DB::table('result')->where('resultID', $rid)->pluck('studentID');
         Session::flash('success', 'Approved Recommendation for '.$sid->first().'!');
         return view('testGrades.statusresult');
@@ -144,38 +84,14 @@ class GradeController extends Controller
     {
         error_log('Rejected!');
         DB::table('result')->where('resultID', $rid)->update(['recommendResult'=>'Rejected']);
-
-        //check whether any more recommendation for the particular test
-        $testID = DB::table('result')->where('resultID', $rid)->pluck('testID');
-        $checkRecommendation = DB::table('result')
-            ->where('testID', '=', $testID)
-            ->where('recommendResult', '=', "Pending")
-            ->get();
-
-        if ( $checkRecommendation ->isEmpty() )
-        {
-            //Check got any approve status
-            $checkAnyApprove = DB::table('result')
-                ->where('testID', '=', $testID)
-                ->where('recommendResult', '=', "Approved")
-                ->get();
-
-            if ( $checkAnyApprove ->isEmpty() )
-            {
-                DB::table('test')
-                    ->where('testID', $testID)
-                    ->update(['status' => "Updated"]);
-            }
-        }
-
         $sid = DB::table('result')->where('resultID', $rid)->pluck('studentID');
         Session::flash('success', 'Rejected Recommendation for '.$sid->first().'!');
         return view('testGrades.statusresult');
     }
-
-    //view a test grade
+    
     public function details_index($tid)
     {
+        Session::forget('success');
         $testList = DB::table('result')
             ->where('testID','=', $tid)
             ->get();
@@ -186,145 +102,21 @@ class GradeController extends Controller
         return view('testGrades.viewGradeDetails')->with('testList', $testList);
     }
 
-    //edit a student grade
-    public function details_edit($id)
-    {
-        $editGrade = DB::table('result')
-            ->where('resultID' ,'=', $id)
-            ->get();
-
-
-        return view('testGrades.editGradeDetails')->with('editgrade', $editGrade);
-    }
-
-    //update a student grade
-    public function details_update(Request $request, $id)
-    {
-
-        $testID = DB::table('result')->where('resultID', $id)->pluck('testID');
-
-        DB::table('result')
-            ->where('resultID', $id)
-            ->update(['grade' => $request->input('grade'),
-                'recommendation' => $request->input('recommendation')]);
-
-        DB::table('test')
-            ->where('testID', $testID->first())
-            ->update(['status' => "Saved"]);
-
-        return redirect()->intended('grades_details/'.$testID->first())->with('message', 'Grade have been updated successfully!');
-
-
-
-    }
-
-
-    //submit student grade to hod
-    public function details_submit($resultID)
-    {
-
-        $testID = DB::table('result')->where('resultID', $resultID)->pluck('testID');
-
-        //check whether there are any recommendation
-        $checkRecommendation = DB::table('result')
-            ->where('testID', '=', $testID)
-            ->where('recommendation', '!=', null)
-            ->where('recommendation', '!=', "")
-            ->get();
-
-
-        if ( $checkRecommendation ->isEmpty() )
-        {
-            //no recommendation
-            DB::table('test')
-                ->where('testID', $testID)
-                ->update(['status' => "Updated"]);
-        }
-        else {
-
-            //got recommendation
-            DB::table('test')
-                ->where('testID', $testID)
-                ->update(['status' => "Pending"]);
-
-            DB::table('result')
-                ->where('testID', '=', $testID)
-                ->where('recommendation', '!=', null)
-                ->where('recommendation', '!=', "")
-                ->update(['recommendResult' => "Pending"]);
-
-        }
-
-        return redirect()->route('view_grades.index')->with('message', 'Grades submitted to Hod successfully!');
-    }
-
-    //hod view student grade
     public function hod_details_index($tid)
     {
-        $testID = $tid;
         $testList = DB::table('result')
-            ->join('test', 'test.testID', '=', 'result.testID')
-            ->where('result.testID','=', $tid)
+            ->where('testID','=', $tid)
             ->get();
 
         /*$classStudentList = DB::table('students')
                         ->where('courseID' ,'=', '3313')
                         ->get(); */
-
-        return view('hodTestGrades.hodViewGradeDetails')->with('testList', $testList)->with('passID', $testID);
-    }
-
-    //hod grade publish
-    public function publish($id)
-    {
-        $testID = $id;
-
-        DB::table('test')
-            ->where('testID', '=', $testID)
-            ->update(['status' => 'Published']);
-
-        return redirect()->route('hod_view_grades.index')->with('message', 'Grades publish successfully!');
-
-    }
-
-    public function moderateGrade($id)
-    {
-        $testID = $id;
-        return view('hodTestGrades.moderateGrade', ['testID' => $testID]);
-    }
-
-    public function moderateStore(Request $request, $id)
-    {
-        $retrieveInput = $request->input('valueID');
-        $retrieveID = $id;
-
-        $convertInput = (((int)$retrieveInput)/100)+1;
-
-        $rows = DB::table('Result')->where('testID', '=', $retrieveID)->get();
-        foreach($rows as $row) {
-            $studentValue = $row->studentID;
-            $resultValue = $row->grade;
-            $updatedValue =  $convertInput*$resultValue;
-
-            if ($updatedValue > 100)
-            {
-                $updatedValue = 100;
-            }
-
-            Result::where('studentID', '=', $studentValue)->
-            where('testID', '=', $retrieveID)->
-            update(['grade' => $updatedValue]);
-        }
-
-        DB::table('test')
-            ->where('testID', '=', $retrieveID)
-            ->update(['status' => 'Moderated']);
-
-        return redirect()->intended('hod_grades_details/'.$retrieveID)->with('message', 'Grades moderated successfully!');
+        return view('hodTestGrades.hodViewGradeDetails')->with('testList', $testList);
     }
 
     public function choose_mod()
     {
+        Session::forget('success');
         $lid = Auth::user()->name;
         $moduleList = DB::table('module')
             ->where('lecturerID',$lid)
@@ -337,6 +129,7 @@ class GradeController extends Controller
 
     public function create_index($mid)
     {
+        Session::forget('success');
         error_log($mid);
         $lid = Auth::user()->name;
         $moduleList = DB::table('module')
@@ -353,10 +146,13 @@ class GradeController extends Controller
         $classList = DB::table('student')
             ->where('courseID','=', $cid)
             ->get();
+        /*$classStudentList = DB::table('students')
+                        ->where('courseID' ,'=', '3313')
+                        ->get(); */
         return view('testGrades.createGrade')->with('moduleList', $moduleList)->with('mod', $mod)->with('cid', $cid)->with('classList', $classList);
     }
 
-    public function hod_view_index()
+     public function hod_view_index()
     {
 
         $lid = Auth::user()->name;
@@ -364,8 +160,6 @@ class GradeController extends Controller
         $testsList = DB::table('test')
             ->leftJoin('module', 'test.moduleID', 'module.moduleID')
             ->where('module.courseID',$cid->first())
-            ->where('test.status', '=', "Updated")
-            ->orWhere('test.status', '=', "Moderated")
             ->get();
         error_log($testsList);
         return view('hodTestGrades.hodViewGrade')->with('testsList', $testsList);
@@ -378,9 +172,8 @@ class GradeController extends Controller
         $testsList = DB::table('test')
             ->leftJoin('module', 'test.moduleID', 'module.moduleID')
             ->where('module.lecturerID',$lid)
-            ->where('test.status', '=', "Saved")
             ->get();
-
+            
         return view('testGrades.viewGrade')->with('testsList', $testsList);
     }
 
@@ -407,13 +200,22 @@ class GradeController extends Controller
         $students = $request->input('studentID');
         $testName = $request->input('testName');
         $modID = $request->input('moduleID');
-
+        //$today = Carbon\Carbon::today('Asia/Singapore');
+        //$mytime = Carbon\Carbon::createFromFormat('YYYY-mm-dd', $today ,'Asia/Singapore');
+        $mytime = Carbon\Carbon::today();
+        $year = $mytime->year;
+        $month = $mytime->month;
+        $day = $mytime->day;
+        $date = $year.'-'.$month.'-'.$day;
+        error_log($date);
+        $getDate = date('Y-m-d', strtotime($date));
         $lid = Auth::user()->name;
         $newTest = new Test;
         $newTest->testName = $testName;
         $newTest->status = 'Pending';
         $newTest->moduleID = $modID;
         $newTest->lecturerID = $lid;
+        $newTest->grade_Deadline = $getDate;
         $newTest->save();
         $testingID = DB::table('test')
             ->where('testName', $testName)
@@ -424,6 +226,7 @@ class GradeController extends Controller
         error_log($a);
         error_log(count($grades));
         foreach($grades as $g=>$f){
+            /*
             $addGrades = new Grade();
             $addGrades->testID = $a;
             $addGrades->moduleID = $modID;
@@ -437,10 +240,50 @@ class GradeController extends Controller
             error_log("fb");
             error_log($recommend[$g]);
             $addGrades->save();
+            */
+            if($recommend[$g]==null){
+               /* DB::table('result')->insert([
+                'testID' => $a, 
+                'moduleID' => $modID,
+                'grade' => $f, 
+                'studentID' => $students[$g],
+                'recommendation' => 'NULL',
+                'recommendResult' => 0 ]);*/
+                error_log('null');
+                $addGrades = new Grade();
+                $addGrades->testID = $a;
+                $addGrades->moduleID = $modID;
+                $addGrades->grade = $f;
+                $addGrades->studentID = $students[$g];
+                $addGrades->recommendation = NULL;
+                $addGrades->recommendResult = 0;
+                $addGrades->save();
+            }
+            else{
+                error_log('not null');
+               /* DB::table('result')->insert([
+                'testID' => $a, 
+                'moduleID' => $modID,
+                'grade' => $f, 
+                'studentID' => $students[$g],
+                'recommendation' => $recommend[$g],
+                'recommendResult' => 'Pending' ]);*/
+                $addGrades = new Grade();
+                $addGrades->testID = $a;
+                $addGrades->moduleID = $modID;
+                $addGrades->grade = $f;
+                $addGrades->studentID = $students[$g];
+                $addGrades->recommendation = $recommend[$g];
+                $addGrades->recommendResult = 'Pending';
+                $addGrades->save();
+            }
+
         }
         $testsList = DB::table('test')
-            ->where('lecturerID','=', $lid)
+            ->leftJoin('module', 'test.moduleID', 'module.moduleID')
+            ->where('module.lecturerID',$lid)
             ->get();
+            
         Session::flash('success', 'Grades uploaded!');
         return view('testGrades.viewGrade')->with('testsList', $testsList);
     }
@@ -490,7 +333,7 @@ class GradeController extends Controller
         //
     }
 
-    public function compute_gpa($studentid)
+        public function compute_gpa($studentid)
     {
         //Declare variable
         $sumAccGradePointCredit = 0;
@@ -629,8 +472,5 @@ class GradeController extends Controller
 
         return view('testGrades.studentViewGPA')->with("trimester", $displayTrimester)->with("trimestergpa", $trimesterGPA)->with("cumulativegpa", $cumulativeGPA);
     }
-
-
-
 
 }
