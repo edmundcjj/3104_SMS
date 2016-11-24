@@ -33,15 +33,15 @@ f+@extends('home')
 		<div class="input-group input-group-unstyled">
 
 		
-		<input class="form-control" type="password"  name="stud_Pass" id="stud_Pass" placeholder="Enter Password" value="{ !!$editStudent->studentPassword!!}"> 
+		<input class="form-control" type="password"  name="stud_Pass" id="stud_Pass" placeholder="Enter Password" value= {!! $editStudent->studentPassword !!}> 
 
-		<input class="form-control" type="password"  name="stud_Pass" id="stud_Pass" placeholder="Enter New Password" disabled>
+		
 		<span class="input-group-addon">
 		<i class="glyphicon glyphicon-eye-open" name="seepass" id="seepass"></i>
 		</span>
 		</div>
 		
-		 <!--<input type="checkbox" name="validate_Checkbox" id="student_chkBox" value="enabled_Checkbox" ><b> Change Password </b> <br>-->
+		
 		 
 		</div>
 

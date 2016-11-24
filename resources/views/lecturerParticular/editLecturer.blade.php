@@ -30,7 +30,7 @@
 		<div class="form-group">
 		{!! Form::label('lect_Pass', 'Password:') !!}
 		<div class="input-group input-group-unstyled">
-		 <input class="form-control" type="password"  name="lect_Pass" id="lect_Pass" placeholder="Enter Password" value="{ !!$lecturer->lecturerPassword!!}"> 
+		 <input class="form-control" type="password"  name="lect_Pass" id="lect_Pass" placeholder="Enter Password" value={!! $lecturer->lecturerPassword !!}> 
 
 		<span class="input-group-addon">
 		<i class="glyphicon glyphicon-eye-open" name="seelectpass" id="seelectpass"></i>

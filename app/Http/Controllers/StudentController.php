@@ -75,11 +75,11 @@ class StudentController extends Controller
     public function store(Request $request)
     {
 
-        $getPassword = $request->input('student_Pass');
+        $getPassword = $request->input('stud_Pass');
 
         $this->validate($request,[
 
-                'student_Pass' => 'required|regex:/^(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]{7,}$/',
+                'stud_Pass' => 'required|regex:/^(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?#&])[A-Za-z\d$@$!%*?#&]{7,}$/',
             ]);
         $hashedPassword = Hash::make($getPassword);
 
@@ -181,8 +181,8 @@ class StudentController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $input = $request->all();
-       // Log::info($input);
+      $input = $request->all();
+        Log::info($input);
         $getUserRole = Auth::user()->role;
        // Log::info($getUserRole);
         
@@ -190,34 +190,66 @@ class StudentController extends Controller
         $getDate = date('Y-m-d', strtotime($getDate));
         date_default_timezone_set('Asia/Singapore');
 
-                   $getPassword = $request['stud_Pass'];
+        $getPassword = $request['stud_Pass'];
+        Log::info($getPassword);
+
+        // If Password remain the same in Database
+        if(Student::where('studentID', '=', $id)->where('studentPassword', '=', $getPassword)->exists())
+        {
+            // Validate Role is Admin/ Lecturer / HOD
+            if($getUserRole == "Admin" || $getUserRole == "Lecturer" || $getUserRole == "Hod"){
+                Log::info(' NON Student w/o Password');
+
+                DB::table('student')
+                ->where('studentID', $id)
+                ->update([
+                    'studentName' => $request['student_Name'],
+                    'birth_Date' => $getDate,
+                    'address' => $request['student_address'],
+                    'status'  =>$request['student_status']
+                ]);
             
+            }
+            else
+            {
+                Log::info('Student w/o Password');
+
+                DB::table('student')
+                ->where('studentID', $id)
+                ->update([
+                    'studentName' => $request['student_Name'],
+                    'birth_Date' => $getDate,
+                    'address' => $request['student_address']
+                ]);
+            }
+
+         }else{
+
+            // If Password is different in Database
             $this->validate($request,[
 
-                'stud_Pass' => 'required|regex:/^(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]{7,}$/',
+                'stud_Pass' => 'required|regex:/^(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?#&])[A-Za-z\d$@$!%*?#&]{7,}$/',
             ]);
-            
-            $hashedPassword = Hash::make($getPassword);
 
-            // Validate Role is Admin/ Hod / Lecturer
-            if($getUserRole == "Admin" ||  $getUserRole =="Lecturer" ||  $getUserRole =="Hod"){
-
+             //Validate Role is Admin/ Hod / Lecturer
+            if($getUserRole == "Admin" ||  $getUserRole =="Lecturer" ||  $getUserRole =="Hod")
+            {
                 //Log::info('NON Student with Password');
                 DB::table('student')
-                ->where('studentID', $id)
-                ->update([
-                    'studentName' => $request['student_Name'],
-                    'birth_Date' => $getDate,
-                    'address' => $request['student_address'],
-                    'status'  =>$request['student_status'],
-                    'studentPassword' => $getPassword,
-                    'password_Date'  => date('Y/m/d')
-                ]);
-            }
-            
-            else{
-                //Log::info('Student with Password');
+                    ->where('studentID', $id)
+                    ->update([
+                        'studentName' => $request['student_Name'],
+                        'birth_Date' => $getDate,
+                        'address' => $request['student_address'],
+                        'status'  =>$request['student_status'],
+                        'studentPassword' => $getPassword,
+                        'password_Date'  => date('Y/m/d')
+                    ]);
 
+            }
+            else{
+                // Student update personal particulars
+                Log::info('Student with Password');
                 DB::table('student')
                 ->where('studentID', $id)
                 ->update([
@@ -227,16 +259,25 @@ class StudentController extends Controller
                     'studentPassword' => $getPassword,
                     'password_Date'  => date('Y/m/d')
                 ]);
-            }
+        
+                }
 
-            DB::table('users')
-            ->where('name', $id)
-            ->update([
-                'password' => $hashedPassword
-            ]);
-       
+            $hashedPassword = Hash::make($getPassword);    
+        
+                // Update Password at User Table
+                DB::table('users')
+                    ->where('name', $id)
+                    ->update([
+                        'password' => $hashedPassword
+                    ]);
+
+         }
+            
+
         Session::flash('success', 'Updates have been successfully saved!');
         return redirect()->back();
+
+
 
     }
 
