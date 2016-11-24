@@ -7,6 +7,9 @@
 @endsection
 
 @section('content')
+	@if(Session::has('message'))
+		<div class="alert alert-success">{{ Session::get('message') }}</div>
+	@endif
 
  	<a href="/choose_mod" class ="btn btn-primary" style="float:right">Add Test Results</a>
 	<h4> Grades </h4>

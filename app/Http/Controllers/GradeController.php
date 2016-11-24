@@ -18,6 +18,8 @@ use Hash;
 use Session;
 use Log;
 use Carbon;
+use Crypt;
+use App\Result;
 
 class GradeController extends Controller
 {
@@ -88,7 +90,8 @@ class GradeController extends Controller
         Session::flash('success', 'Rejected Recommendation for '.$sid->first().'!');
         return view('testGrades.statusresult');
     }
-    
+
+    //view a test grade
     public function details_index($tid)
     {
         Session::forget('success');
@@ -102,16 +105,153 @@ class GradeController extends Controller
         return view('testGrades.viewGradeDetails')->with('testList', $testList);
     }
 
+    //edit a student grade
+    public function details_edit($id)
+    {
+        $editGrade = DB::table('result')
+            ->where('resultID' ,'=', $id)
+            ->get();
+
+
+        return view('testGrades.editGradeDetails')->with('editgrade', $editGrade);
+    }
+
+    //update a student grade
+    public function details_update(Request $request, $id)
+    {
+
+        $testID = DB::table('result')->where('resultID', $id)->pluck('testID');
+
+        DB::table('result')
+            ->where('resultID', $id)
+            ->update(['grade' => $request->input('grade'),
+                'recommendation' => $request->input('recommendation')]);
+
+        DB::table('test')
+            ->where('testID', $testID->first())
+            ->update(['status' => "Saved"]);
+
+        return redirect()->intended('grades_details/'.$testID->first())->with('message', 'Grade have been updated successfully!');
+
+
+
+    }
+
+    //submit student grade to hod
+    public function details_submit($resultID)
+    {
+
+        $testID = DB::table('result')->where('resultID', $resultID)->pluck('testID');
+
+        //check whether there are any recommendation
+        $checkRecommendation = DB::table('result')
+            ->where('testID', '=', $testID)
+            ->where('recommendation', '!=', null)
+            ->where('recommendation', '!=', "")
+            ->get();
+
+
+        if ( $checkRecommendation ->isEmpty() )
+        {
+            //no recommendation
+            DB::table('test')
+                ->where('testID', $testID)
+                ->update(['status' => "Updated"]);
+        }
+        else {
+
+            //got recommendation
+            DB::table('test')
+                ->where('testID', $testID)
+                ->update(['status' => "Pending"]);
+
+            DB::table('result')
+                ->where('testID', '=', $testID)
+                ->where('recommendation', '!=', null)
+                ->where('recommendation', '!=', "")
+                ->update(['recommendResult' => "Pending"]);
+
+        }
+
+        return redirect()->route('view_grades.index')->with('message', 'Grades submitted to Hod successfully!');
+    }
+
+//    public function hod_details_index($tid)
+//    {
+//        $testList = DB::table('result')
+//            ->where('testID','=', $tid)
+//            ->get();
+//
+//        /*$classStudentList = DB::table('students')
+//                        ->where('courseID' ,'=', '3313')
+//                        ->get(); */
+//        return view('hodTestGrades.hodViewGradeDetails')->with('testList', $testList);
+//    }
+
+    //hod view student grade
     public function hod_details_index($tid)
     {
+        $testID = $tid;
         $testList = DB::table('result')
-            ->where('testID','=', $tid)
+            ->join('test', 'test.testID', '=', 'result.testID')
+            ->where('result.testID','=', $tid)
             ->get();
 
         /*$classStudentList = DB::table('students')
                         ->where('courseID' ,'=', '3313')
                         ->get(); */
-        return view('hodTestGrades.hodViewGradeDetails')->with('testList', $testList);
+
+        return view('hodTestGrades.hodViewGradeDetails')->with('testList', $testList)->with('passID', $testID);
+    }
+
+
+    public function moderateGrade($id)
+    {
+        $testID = $id;
+        return view('hodTestGrades.moderateGrade', ['testID' => $testID]);
+    }
+
+    public function moderateStore(Request $request, $id)
+    {
+        $retrieveInput = $request->input('valueID');
+        $retrieveID = $id;
+
+        $convertInput = (((int)$retrieveInput)/100)+1;
+
+        $rows = DB::table('Result')->where('testID', '=', $retrieveID)->get();
+        foreach($rows as $row) {
+            $studentValue = $row->studentID;
+            $resultValue = $row->grade;
+            $updatedValue =  $convertInput*$resultValue;
+
+            if ($updatedValue > 100)
+            {
+                $updatedValue = 100;
+            }
+
+            Result::where('studentID', '=', $studentValue)->
+            where('testID', '=', $retrieveID)->
+            update(['grade' => $updatedValue]);
+        }
+
+        DB::table('test')
+            ->where('testID', '=', $retrieveID)
+            ->update(['status' => 'Moderated']);
+
+        return redirect()->intended('hod_grades_details/'.$retrieveID)->with('message', 'Grades moderated successfully!');
+    }
+
+    //hod grade publish
+    public function publish($id)
+    {
+        $testID = $id;
+
+        DB::table('test')
+            ->where('testID', '=', $testID)
+            ->update(['status' => 'Published']);
+
+        return redirect()->route('hod_view_grades.index')->with('message', 'Grades publish successfully!');
+
     }
 
     public function choose_mod()

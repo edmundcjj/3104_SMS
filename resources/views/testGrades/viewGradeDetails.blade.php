@@ -29,12 +29,12 @@
 			<td>{!! $test->studentID !!}</td>
 			<td>{!! $test->grade !!}</td>
 			<td>{!! $test->recommendation !!}</td>
-			<td><a href="" class="btn action btn-info">Edit</a></td>
+			<td><a class="btn action btn-info" href="{{ url('grades_details_edit', $test->resultID) }}" >Edit</a></td>
 		</tr>
 		@endforeach
 	</tbody>
 	</table>
-	<a href="" style="float:right" class="btn action btn-info">Submit to HOD</a>
+		<a style="float:right" class="btn action btn-info" href="{{ url('grades_details_submit', $test->resultID) }}" >Submit to HOD</a>
 	</div>
 		<br>
 		<br>
