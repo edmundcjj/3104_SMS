@@ -31,7 +31,7 @@
 {!! Form::label('student_Pass', 'Password:') !!}
 <div class="input-group input-group-unstyled">
 <!-- { !! Form::password('student_Pass', array('class' => 'form-control', 'required' ,'placeholder' => 'Enter Password' )) !!} -->
-<input class="form-control" type="password"  name="student_Pass" id="student_Pass" placeholder="Enter Password">
+<input class="form-control" type="password"  name="stud_Pass" id="student_Pass" placeholder="Enter Password">
 <span class="input-group-addon">
 <i class="glyphicon glyphicon-eye-open" name="eye" id="eye"></i>
 </span>

@@ -40,13 +40,26 @@ class StudentController extends Controller
             //->get()
             ->paginate(50);
         }
-        else if($getUserRole == "Lecturer" || $getUserRole == "Hod")
+        else if($getUserRole == "Hod")
         {
+            Log::info("Found a role");
             $display_StudentList = DB::table('student')
                 ->join('course', 'student.courseID', '=', 'course.courseID')
                 ->where('course.lecturerID', '=', $getUserName)
                 ->orderBy('course.courseName' ,'asc')
                 ->paginate(50);
+            Log::info($display_StudentList);
+        }
+        else if($getUserRole == "Lecturer")
+        {
+            Log::info("Found a role");
+            $display_StudentList = DB::table('student')
+                ->join('course', 'student.courseID', '=', 'course.courseID')
+                ->join('module', 'course.courseID', '=', 'module.courseID')
+                ->where('module.lecturerID', '=', $getUserName)
+                ->orderBy('course.courseName', 'asc')
+                ->paginate(50);
+            Log::info($display_StudentList);
         }
 
         return view('studentParticular.viewParticular')->with('displayStudentList', $display_StudentList);
@@ -98,7 +111,7 @@ class StudentController extends Controller
         $createLogin->name = $request->input('student_id');
         $createLogin->password = $hashedPassword;
         $createLogin->role = 'Student';
-        //$createLogin->email = 'random@email.com';
+        $createLogin->status = 'open';
         $createLogin->save();
 
         $getParticulars = new Student();
@@ -294,7 +307,7 @@ class StudentController extends Controller
         Log::info($getStudentID);
         if(Student::where('studentID', '=' , $getStudentID)->where('status', '=', 'Expel')->exists()){
 
-            DB::table('students')
+            DB::table('student')
             ->where('studentID', $getStudentID)
             ->delete();
             

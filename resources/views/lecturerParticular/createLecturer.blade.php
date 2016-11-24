@@ -32,7 +32,7 @@
 {!! Form::label('lecturer_Password', 'Password:') !!}
 <!--{ !! Form::password('lecturer_Password', array('class' => 'form-control', 'required' ,'placeholder' => 'Enter Password' )) !!}-->
 <div class="input-group input-group-unstyled">
-<input class="form-control" type="password"  name="lecturer_Password" id="lecturer_Password" placeholder="Enter Password">
+<input class="form-control" type="password"  name="lect_Pass" id="lecturer_Password" placeholder="Enter Password">
 <span class="input-group-addon">
 <i class="glyphicon glyphicon-eye-open" name="leye" id="leye"></i>
 </span>

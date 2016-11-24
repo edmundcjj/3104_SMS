@@ -95,7 +95,7 @@ class HomeController extends Controller
 
             return view('otp');
         }
-        elseif(strcmp($type, 'Ad')==0){
+        elseif(strcmp($type, 'AD')==0){
             $getemail = DB::table('admin')->where('adminName', '=', $uid)->pluck('email');
             $email = $getemail->first();
             error_log($email);
@@ -160,7 +160,7 @@ class HomeController extends Controller
             $email = $getemail->first();
             error_log($email);
         }
-        elseif(strcmp($type, 'Ad')==0){
+        elseif(strcmp($type, 'AD')==0){
             $getemail = DB::table('admin')->where('adminName', '=', $uid)->pluck('email');
             $email = $getemail->first();
             error_log($email);

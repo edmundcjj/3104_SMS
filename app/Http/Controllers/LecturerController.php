@@ -77,7 +77,7 @@ class LecturerController extends Controller
         $createLogin->name = $request->input('lecturer_id');
         $createLogin->password = $hashedPassword;
         $createLogin->role = 'Lecturer';
-        //$createLogin->email = 'random@email.com';
+        $createLogin->status = 'open';
         $createLogin->save();
 
         $getParticulars = new Lecturer();

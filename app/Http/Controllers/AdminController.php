@@ -59,7 +59,7 @@ class AdminController extends Controller
     }
 
     public function backupApplication(){
-        exec('cd '.storage_path().'\app\http---localhost & del * /S /Q');
+        exec('cd '.storage_path().'\app\http---localhost');
         Artisan::call('backup:run',['--only-files' => true]);
         $path = (exec('cd '.storage_path().'\app\http---localhost & for /r %i in (*) do echo %i'));
         return response()->download($path);
@@ -68,7 +68,7 @@ class AdminController extends Controller
     }
 
     public function backupDatabase(){
-        exec('cd '.storage_path().'\app\http---localhost & del * /S /Q');
+        exec('cd '.storage_path().'\app\http---localhost');
         Artisan::call('backup:run',['--only-db' => true]);
         $path = (exec('cd '.storage_path().'\app\http---localhost & for /r %i in (*) do echo %i'));
         return response()->download($path);
