@@ -23,7 +23,21 @@
 		<tr>
 			<td>{!! $test->moduleID !!}</td>
 			<td>{!! $test->testName !!}</td>
-			<td>{!! $test->grade !!}</td> 
+			<td>
+				@if ($test->grade >= 0 && $test->grade < 20)
+					F
+				@elseif ($test->grade >= 20 && $test->grade < 42)
+					E
+				@elseif ($test->grade >= 42 && $test->grade < 50)
+					D
+				@elseif ($test->grade >= 50 && $test->grade < 65)
+					C
+				@elseif ($test->grade >= 65 && $test->grade < 75)
+					B
+				@elseif ($test->grade >= 75 && $test->grade <= 100)
+					A
+				@endif
+			</td>
 		</tr>
 		@endforeach
 	</tbody>

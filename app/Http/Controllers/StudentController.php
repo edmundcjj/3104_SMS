@@ -154,6 +154,7 @@ class StudentController extends Controller
             ->where('studentID', '=', $user_id)
             ->where('status', '=', "Published")
             ->get();
+
         return view('testGrades.studResults')->with('gradeList', $gradeList);
     }
 
