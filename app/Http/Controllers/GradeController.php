@@ -20,9 +20,55 @@ use Log;
 use Carbon;
 use Crypt;
 use App\Result;
+use Date;
+
 
 class GradeController extends Controller
 {
+    // Admin update of Marks
+//    public function updateRecommendedResults(Request $request, $result_id, $currentGrade)
+//    {
+//
+//        $newInputValue = $request->input('newResultValue');
+//
+//        // Current mark + New mark
+//        $currentGrade = $currentGrade + $newInputValue;
+//        // Log::info($currentGrade);
+//
+//        // Validate if the Updated Grade is above 100 marks
+//        if($currentGrade > 100){
+//            $currentGrade = 100;
+//        }
+//
+//        // Update of Grade changes and result status.
+//        DB::table('result')
+//            ->where('resultID', $result_id)
+//            ->update(['grade' =>  $currentGrade,
+//                'recommendResult' =>'Updated' ]);
+//
+//        $testID = DB::table('result')->where('resultID', $result_id)->pluck('testID');
+//
+//        //check whether there are any more recommendation
+//        $checkRecommendation = DB::table('result')
+//            ->where('testID', '=', $testID)
+//            ->where('recommendResult', '=', "Approved")
+//            ->get();
+//
+//
+//        if ( $checkRecommendation ->isEmpty() )
+//        {
+//            //no recommendation
+//            DB::table('test')
+//                ->where('testID', $testID)
+//                ->update(['status' => "Updated"]);
+//        }
+//
+//        Session::flash('success', 'Adding of marks have been updated!');
+//
+//        return redirect('execute_list');
+//
+//    }
+
     /**
      * Display a listing of the resource.
      *
@@ -82,6 +128,16 @@ class GradeController extends Controller
         return view('testGrades.statusresult');
     }
 
+//    public function approve($rid)
+//    {
+//        error_log('Approved!');
+//        DB::table('result')->where('resultID', $rid)->update(['recommendResult'=>'Approved']);
+//
+//        $sid = DB::table('result')->where('resultID', $rid)->pluck('studentID');
+//        Session::flash('success', 'Approved Recommendation for '.$sid->first().'!');
+//        return view('testGrades.statusresult');
+//    }
+
     public function reject($rid)
     {
         error_log('Rejected!');
@@ -91,18 +147,67 @@ class GradeController extends Controller
         return view('testGrades.statusresult');
     }
 
+//    public function reject($rid)
+//    {
+//        error_log('Rejected!');
+//        DB::table('result')->where('resultID', $rid)->update(['recommendResult'=>'Rejected']);
+//
+//        //check whether any more recommendation for the particular test
+//        $testID = DB::table('result')->where('resultID', $rid)->pluck('testID');
+//        $checkRecommendation = DB::table('result')
+//            ->where('testID', '=', $testID)
+//            ->where('recommendResult', '=', "Pending")
+//            ->get();
+//
+//        if ( $checkRecommendation ->isEmpty() )
+//        {
+//            //Check got any approve status
+//            $checkAnyApprove = DB::table('result')
+//                ->where('testID', '=', $testID)
+//                ->where('recommendResult', '=', "Approved")
+//                ->get();
+//
+//            if ( $checkAnyApprove ->isEmpty() )
+//            {
+//                DB::table('test')
+//                    ->where('testID', $testID)
+//                    ->update(['status' => "Updated"]);
+//            }
+//        }
+//
+//        $sid = DB::table('result')->where('resultID', $rid)->pluck('studentID');
+//        Session::flash('success', 'Rejected Recommendation for '.$sid->first().'!');
+//        return view('testGrades.statusresult');
+//    }
+
     //view a test grade
     public function details_index($tid)
     {
         Session::forget('success');
         $testList = DB::table('result')
-            ->where('testID','=', $tid)
+            ->where('result.testID','=', $tid)
             ->get();
 
         /*$classStudentList = DB::table('students')
                         ->where('courseID' ,'=', '3313')
                         ->get(); */
-        return view('testGrades.viewGradeDetails')->with('testList', $testList);
+
+        $deadlineDate = DB::table('test')
+            ->where('testID','=', $tid)
+            ->get();
+
+
+        foreach ($deadlineDate as $d)
+        {
+            $value = $d->grade_Deadline;
+        }
+
+        $deadline = Carbon\Carbon::parse($value);
+
+        $today_date = Carbon\Carbon::today()->format("Y-m-d");
+
+
+        return view('testGrades.viewGradeDetails')->with('testList', $testList)->with('currenttime', $today_date)->with('deadlinetime', $deadline);
     }
 
     //edit a student grade
@@ -342,7 +447,9 @@ class GradeController extends Controller
         $modID = $request->input('moduleID');
         //$today = Carbon\Carbon::today('Asia/Singapore');
         //$mytime = Carbon\Carbon::createFromFormat('YYYY-mm-dd', $today ,'Asia/Singapore');
-        $mytime = Carbon\Carbon::today();
+
+        $mytime = Carbon\Carbon::today()->addDays(7);
+        error_log($mytime);
         $year = $mytime->year;
         $month = $mytime->month;
         $day = $mytime->day;
@@ -356,6 +463,7 @@ class GradeController extends Controller
         $newTest->moduleID = $modID;
         $newTest->lecturerID = $lid;
         $newTest->grade_Deadline = $getDate;
+
         $newTest->save();
         $testingID = DB::table('test')
             ->where('testName', $testName)

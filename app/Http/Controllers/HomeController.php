@@ -46,9 +46,11 @@ class HomeController extends Controller
 
         if(strcmp($type, 'ST')==0){
             $oldDate = DB::table('student')->where('studentID', $uid)->pluck('password_date');
-            $mytime = Carbon\Carbon::now();
-            $getDate = date('Y-m-d', strtotime($mytime));
-            if($oldDate->first() > $getDate){
+            $mytime = Carbon\Carbon::today();
+            $getDate = date_create_from_format('Y-m-d', $oldDate->first());
+            error_log($getDate);
+            error_log($mytime);
+            if($getDate < $mytime){
                 Session::flash('account_locked', 'Your account has been locked! Please contact your administrator for more information.' );
                 DB::table('users')->where('name',$uid)->update(['status'=>'locked']);
                 error_log('locked');
@@ -60,10 +62,12 @@ class HomeController extends Controller
         }
         elseif(strcmp($type, 'LT')==0){
 
-            $oldDate = DB::table('student')->where('studentID', $uid)->pluck('password_date');
-            $mytime = Carbon\Carbon::now();
-            $getDate = date('Y-m-d', strtotime($mytime));
-            if($oldDate->first() > $getDate){
+            $oldDate = DB::table('lecturer')->where('lecturerID', $uid)->pluck('password_date');
+            $mytime = Carbon\Carbon::today();
+            $getDate = date_create_from_format('Y-m-d', ''.$oldDate->first());
+            error_log($oldDate->first());
+            error_log($mytime);
+            if($getDate < $mytime){
                 Session::flash('account_locked', 'Your account has been locked! Please contact your administrator for more information.' );
                 DB::table('users')->where('name',$uid)->update(['status'=>'locked']);
                 Auth::logout();
@@ -96,7 +100,7 @@ class HomeController extends Controller
             return view('otp');
         }
         elseif(strcmp($type, 'AD')==0){
-            $getemail = DB::table('admin')->where('adminName', '=', $uid)->pluck('email');
+            $getemail = DB::table('admin')->where('adminID', '=', $uid)->pluck('email');
             $email = $getemail->first();
             error_log($email);
             $r1 = rand(0, 9);

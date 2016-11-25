@@ -29,7 +29,12 @@
 			<td>{!! $test->studentID !!}</td>
 			<td>{!! $test->grade !!}</td>
 			<td>{!! $test->recommendation !!}</td>
-			<td><a class="btn action btn-info" href="{{ url('grades_details_edit', $test->resultID) }}" >Edit</a></td>
+			<td>@if($currenttime > $deadlinetime)
+				{{--<td><a class="btn action btn-info" href="{{ url('grades_details_edit', $test->resultID)}}" >Edit</a></td>--}}
+				@else
+				<td><a class="btn action btn-info" href="{{ url('grades_details_edit', $test->resultID) }}" >Edit</a></td>
+				@endif
+			</td>
 		</tr>
 		@endforeach
 	</tbody>

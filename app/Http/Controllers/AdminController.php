@@ -8,6 +8,7 @@ use App\Http\Requests;
 use App\User;
 use App\Student;
 use App\Lecturer;
+use Mail;
 use Auth;
 use DB;
 use Log;

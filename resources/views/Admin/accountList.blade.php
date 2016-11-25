@@ -11,6 +11,8 @@
 <ul class="tab">
   <li><a href="javascript:void(0)" class="tablinks" onclick="openCity(event, 'Student_List')" id="defaultOpen">Student</a></li>
   <li><a href="javascript:void(0)" class="tablinks" onclick="openCity(event, 'Lecturer_List')">Lecturers</a></li>
+
+	<li><a href="javascript:void(0)" class="tablinks" onclick="openCity(event, 'Hod_List')">HOD</a></li>
   
 </ul>
 
@@ -33,7 +35,7 @@
 
 			<tbody>
 				@foreach($studentAcc as $student_acc)
-				
+
 			  		@if((strtotime($currentDate) - strtotime($student_acc->password_date))/(86400) >= 80)
 					<tr>
 						<td> {!! $student_acc->studentName !!} </td>
@@ -69,6 +71,8 @@
 
 				<tbody>
 				@foreach($lecturerAcc as $lecturer_acc)
+
+					 @if($lecturer_acc->position == "Staff")
 					 @if((strtotime($currentDate) - strtotime($lecturer_acc->password_date))/(86400) >= 80)			
 					 <tr>
 						<td> {!! $lecturer_acc->lecturerName !!} </td>
@@ -79,6 +83,7 @@
 						<td> <a href="{{ URL::to('/sendEmail/'. $lecturer_acc->lecturerName . '/' . $lecturer_acc->email  ) }}" class="btn action btn-info">Send EMail</a> </td>
 					</tr>
 					@endif
+					 @endif
 				@endforeach
 			</tbody>
 
@@ -88,6 +93,43 @@
 
   </div>
 
+	<div id="Hod_List" class="tabcontent">
+		<div class="table-responsive">
+			<table class="table table-condensed">
+
+				<thead>
+				<tr>
+					<th> Lecturer Name </th>
+					<th> Lecturer ID </th>
+					<th> Email </th>
+					<th> Password Expire Date </th>
+					<th> Grace Period </th>
+					<th> Options </th>
+				</tr>
+				</thead>
+
+				<tbody>
+				@foreach($lecturerAcc as $lecturer_acc)
+					@if($lecturer_acc->position == "Hod")
+					@if((strtotime($currentDate) - strtotime($lecturer_acc->password_date))/(86400) >= 80)
+						<tr>
+							<td> {!! $lecturer_acc->lecturerName !!} </td>
+							<td> {!! $lecturer_acc->lecturerID !!} </td>
+							<td> {!! $lecturer_acc->email !!} </td>
+							<td> {!! date('d M Y', strtotime( $lecturer_acc->password_date. '+ 90 days')) !!} </td>
+							<td> {!! (strtotime($currentDate) - strtotime($lecturer_acc->password_date))/(86400) !!} </td>
+							<td> <a href="{{ URL::to('/sendEmail/'. $lecturer_acc->lecturerName . '/' . $lecturer_acc->email  ) }}" class="btn action btn-info">Send EMail</a> </td>
+						</tr>
+					@endif
+					@endif
+				@endforeach
+				</tbody>
+
+
+			</table>
+		</div>
+
+	</div>
 
 
 
