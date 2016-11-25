@@ -32,8 +32,10 @@
 			<td>{!! $test->moduleID !!}</td>
 			<td>{!! $test->moduleName !!}</td>
 			<td>{!! $test->testName !!}</td>
-			<td>{!! $test->status !!}</td> 
+			<td>{!! $test->status !!}</td>
+			@if($test->status == "Saved")
 			<td><a class="btn action btn-primary" href="grades_details/{!! $test->testID !!}">View Details</a></td>
+			@endif
 		</tr>
 		@endforeach
 	</tbody>

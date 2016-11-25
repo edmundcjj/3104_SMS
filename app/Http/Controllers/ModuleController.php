@@ -144,46 +144,72 @@ class ModuleController extends Controller
 
         $validate_moduleName = $request->input('module_name');
 
-        // if Module Name remain unchanged
-        if($validate_moduleName == $module->moduleName){
+        // Validate for duplicate Module Name in other rows
+        if(Module::where('moduleID', '!=', $module->moduleID )->where('moduleName', $validate_moduleName)->exists() ){
+
+            return redirect()->back()->with('error', 'Module Name exists! Please enter a different name.');
+        }
+        else{
+
             DB::table('module')
                 ->where('moduleID', $id)
-                ->update(['lecturerID' => $request->input('module_lecturer')]);
+                ->update(['lecturerID' => $request->input('module_lecturer'),
+                        'moduleName' => $request->input('module_name'),
+                        'credit_Unit' => $request->input('module_credit'),
+                        'trimester' => $request->input('module_trimester')]);
 
-            return redirect()->intended('view_module/'.$module->courseID)->with('message', 'Module Lecturer In-Charge have been updated successfully!');
-
-        }
-        // change in Module Name
-        else
-        {
-            // Validate for duplicate Module Name in other rows
-            if(Module::where('moduleID', '!=', $module->moduleID )->where('moduleName', $validate_moduleName)->exists() ){
-
-                return redirect()->back()->with('error', 'Module Name exists! Please enter a different name.');
-            }
-            else{
-
-                if ($request->input('module_lecturer') == $module->lecturerID)
-                {
-                    DB::table('module')
-                        ->where('moduleID', $id)
-                        ->update(['moduleName' => $validate_moduleName]);
-
-                    return redirect()->intended('view_module/'.$module->courseID)->with('message', 'Module Name have been updated successfully!');
-                }
-                else{
-                    DB::table('module')
-                        ->where('moduleID', $id)
-                        ->update(['lecturerID' => $request->input('module_lecturer'),
-                            'moduleName' => $validate_moduleName
-                        ]);
-
-                    return redirect()->intended('view_module/'.$module->courseID)->with('message', 'Module Lecturer In-Charge and Name have been updated successfully!');
-
-                }
-            }
+                    return redirect()->intended('view_module/'.$module->courseID)->with('message', 'Module have been updated successfully!');
 
         }
+//        $module = DB::table('module')->where('moduleID' ,$id)->first();
+//
+//        $validate_moduleName = $request->input('module_name');
+//
+//        // if Module Name remain unchanged
+//        if($validate_moduleName == $module->moduleName){
+//            DB::table('module')
+//                ->where('moduleID', $id)
+//                ->update(['lecturerID' => $request->input('module_lecturer')]);
+//
+//            DB::table('module')
+//                ->where('moduleID', $id)
+//                ->update(['credit_Unit' => $request->input('module_credit')],
+//                    ['trimester' => $request->input('module_trimester')]);
+//
+//            return redirect()->intended('view_module/'.$module->courseID)->with('message', 'Module Lecturer In-Charge have been updated successfully!');
+//
+//        }
+//        // change in Module Name
+//        else
+//        {
+//            // Validate for duplicate Module Name in other rows
+//            if(Module::where('moduleID', '!=', $module->moduleID )->where('moduleName', $validate_moduleName)->exists() ){
+//
+//                return redirect()->back()->with('error', 'Module Name exists! Please enter a different name.');
+//            }
+//            else{
+//
+//                if ($request->input('module_lecturer') == $module->lecturerID)
+//                {
+//                    DB::table('module')
+//                        ->where('moduleID', $id)
+//                        ->update(['moduleName' => $validate_moduleName]);
+//
+//                    return redirect()->intended('view_module/'.$module->courseID)->with('message', 'Module Name have been updated successfully!');
+//                }
+//                else{
+//                    DB::table('module')
+//                        ->where('moduleID', $id)
+//                        ->update(['lecturerID' => $request->input('module_lecturer'),
+//                            'moduleName' => $validate_moduleName
+//                        ]);
+//
+//                    return redirect()->intended('view_module/'.$module->courseID)->with('message', 'Module Lecturer In-Charge and Name have been updated successfully!');
+//
+//                }
+//            }
+//
+//        }
 
 
     }

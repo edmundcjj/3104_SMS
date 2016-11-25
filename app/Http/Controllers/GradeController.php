@@ -352,7 +352,7 @@ class GradeController extends Controller
         $lid = Auth::user()->name;
         $newTest = new Test;
         $newTest->testName = $testName;
-        $newTest->status = 'Pending';
+        $newTest->status = 'Saved';
         $newTest->moduleID = $modID;
         $newTest->lecturerID = $lid;
         $newTest->grade_Deadline = $getDate;
@@ -414,7 +414,8 @@ class GradeController extends Controller
                 $addGrades->grade = $f;
                 $addGrades->studentID = $students[$g];
                 $addGrades->recommendation = $recommend[$g];
-                $addGrades->recommendResult = 'Pending';
+//                $addGrades->recommendResult = 'Pending';
+                $addGrades->recommendResult = 0;
                 $addGrades->save();
             }
 

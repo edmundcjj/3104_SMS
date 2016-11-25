@@ -39,6 +39,16 @@
 					</select>
 				</div>
 
+				<div class="form-group">
+					{!! Form::label('module_credit', 'Module Credit:', ['class' => 'control-label']) !!}
+					{!! Form::text('module_credit', $module->credit_Unit, ['required', 'class' => 'form-control']) !!}
+				</div>
+
+				<div class="form-group">
+					{!! Form::label('module_trimester', 'Module Trimester:', ['class' => 'control-label']) !!}
+					{!! Form::text('module_trimester', $module->trimester, ['required', 'class' => 'form-control']) !!}
+				</div>
+
 				{!! Form::submit('Update Module', ['class' => 'btn btn-success']) !!}
                 {{ Form::close() }}
 			@endforeach

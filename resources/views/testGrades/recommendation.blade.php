@@ -5,7 +5,7 @@
 @section('content')
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
 
-	<h2><span class="glyphicon glyphicon-user"></span>Admin</h2>
+	<h2><span class="glyphicon glyphicon-user"></span>Hod</h2>
 	<h4> List of Recommendations </h4>
 	<div class="table-responsive">
 	<table class="table table-condensed">
