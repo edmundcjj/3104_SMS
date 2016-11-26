@@ -6,12 +6,14 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use App\Http\Requests;
 use App\User;
+use App\Admin;
 use App\Student;
 use App\Lecturer;
 use Mail;
 use Auth;
 use DB;
 use Log;
+use Hash;
 use Session;
 
 class AdminController extends Controller
@@ -94,5 +96,35 @@ class AdminController extends Controller
         return view('unlockresult');
 
     }
+
+
+    public function changePassword()
+    {
+        $getAdminID = Auth::user()->name;
+        Log::info($getAdminID);
+
+        return view('Admin.adminParticular')->with('admin_id', $getAdminID);
+    }
+
+
+    public function updatePassword(Request $request, $id)
+    {
+        $getPassword = $request->input('admin_Pass');
+
+        $this->validate($request,[
+
+                'admin_Pass' => 'required|regex:/^(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?#&])[A-Za-z\d$@$!%*?#&]{7,}$/',
+            ]);
+
+        $hashedPassword = Hash::make($getPassword);
+        DB::table('users')
+            ->where('name', $id)
+            ->update([
+                'password' => $hashedPassword
+                ]);
+
+        return view('home'); 
+    }
+
 
 }

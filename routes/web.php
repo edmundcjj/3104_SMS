@@ -112,6 +112,10 @@ Route::resource('backup', 'AdminController@index');
 Route::get('backup_application','AdminController@backupApplication');
 Route::get('backup_database','AdminController@backupDatabase');
 
+// Admin Change Password
+Route::get('admin', 'AdminController@changePassword');
+Route::post('updateChange/{id}', 'AdminController@updatePassword');
+
 
 Route::resource('view_grades', 'GradeController@view_index');
 
@@ -128,6 +132,9 @@ Route::resource('courseParticular', 'hodCourseController');
 // Route::post('gradeParticular/moderateGrade/store/{testID}','hodGradeController@store');
 
 Route::get('home', 'HomeController@index');
+
+// Homepage w/o OTP
+Route::get('homepage', 'HomeController@homePage');
 
 Route::post('check', 'HomeController@check_otp');
 
