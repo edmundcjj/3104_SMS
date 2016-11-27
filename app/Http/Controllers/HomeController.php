@@ -30,11 +30,11 @@ class HomeController extends Controller
     public function index()
     {
         $uid = Auth::user()->name;
-        error_log($uid);
-        error_log("checkcheck");
+        //error_log($uid);
+        //error_log("checkcheck");
         $type = substr($uid, 0, 2);
         $email = '';
-        error_log($type);
+        //error_log($type);
 
         $as = DB::table('users')->where('name', $uid)->pluck('status');
         $acc_status = $as->first();
@@ -46,37 +46,37 @@ class HomeController extends Controller
 
         if(strcmp($type, 'ST')==0){
             $oldDate = DB::table('student')->where('studentID', $uid)->pluck('password_date');
-            $mytime = Carbon\Carbon::today();
+            $mytime = Carbon\Carbon::now();
             $getDate = date_create_from_format('Y-m-d', $oldDate->first());
-            error_log($getDate);
-            error_log($mytime);
-            if($getDate < $mytime){
+            //error_log($getDate);
+            //error_log($mytime);
+            if($getDate > $mytime){
                 Session::flash('account_locked', 'Your account has been locked! Please contact your administrator for more information.' );
                 DB::table('users')->where('name',$uid)->update(['status'=>'locked']);
-                error_log('locked');
+                //error_log('locked');
                 Auth::logout();
                 return view('auth.login');
             }
-            error_log('message');
+            //error_log('message');
             return view('home');
         }
         elseif(strcmp($type, 'LT')==0){
 
             $oldDate = DB::table('lecturer')->where('lecturerID', $uid)->pluck('password_date');
-            $mytime = Carbon\Carbon::today();
+            $mytime = Carbon\Carbon::now();
             $getDate = date_create_from_format('Y-m-d', ''.$oldDate->first());
-            error_log($oldDate->first());
-            error_log($mytime);
-            if($getDate < $mytime){
+            //error_log($oldDate->first());
+            //error_log($mytime);
+            if($getDate > $mytime){
                 Session::flash('account_locked', 'Your account has been locked! Please contact your administrator for more information.' );
                 DB::table('users')->where('name',$uid)->update(['status'=>'locked']);
                 Auth::logout();
-                error_log('locked');
+                //error_log('locked');
                 return view('auth.login');
             }
             $getemail = DB::table('lecturer')->where('lecturerID', '=', $uid)->pluck('email');
             $email = $getemail->first();
-            error_log($email);
+            //error_log($email);
 
             $r1 = rand(0, 9);
             $r2 = rand(0, 9);
@@ -85,7 +85,7 @@ class HomeController extends Controller
             $r5 = rand(0, 9);
             $r6 = rand(0, 9);
             $otp = $r1.$r2.$r3.$r4.$r5.$r6;
-            error_log($otp);
+            //error_log($otp);
             $setOTP = new OTP();
             $setOTP->otp = $otp;
             $setOTP->userID = $uid;
@@ -102,7 +102,7 @@ class HomeController extends Controller
         elseif(strcmp($type, 'AD')==0){
             $getemail = DB::table('admin')->where('adminID', '=', $uid)->pluck('email');
             $email = $getemail->first();
-            error_log($email);
+            //error_log($email);
             $r1 = rand(0, 9);
             $r2 = rand(0, 9);
             $r3 = rand(0, 9);
@@ -110,7 +110,7 @@ class HomeController extends Controller
             $r5 = rand(0, 9);
             $r6 = rand(0, 9);
             $otp = $r1.$r2.$r3.$r4.$r5.$r6;
-            error_log($otp);
+            //error_log($otp);
             $setOTP = new OTP();
             $setOTP->otp = $otp;
             $setOTP->userID = $uid;
@@ -153,7 +153,7 @@ class HomeController extends Controller
         $r5 = rand(0, 9);
         $r6 = rand(0, 9);
         $otp = $r1.$r2.$r3.$r4.$r5.$r6;
-        error_log($otp);
+        //error_log($otp);
         DB::table('otp')
         ->where('userID', $uid)
         ->update(['otp'=> $otp]);
@@ -162,12 +162,12 @@ class HomeController extends Controller
         if(strcmp($type, 'LT')==0){
             $getemail = DB::table('lecturer')->where('lecturerID', '=', $uid)->pluck('email');
             $email = $getemail->first();
-            error_log($email);
+            //error_log($email);
         }
         elseif(strcmp($type, 'AD')==0){
             $getemail = DB::table('admin')->where('adminName', '=', $uid)->pluck('email');
             $email = $getemail->first();
-            error_log($email);
+            //error_log($email);
         }
 
         $data = array('otp'=>$otp, 'email'=>$email);

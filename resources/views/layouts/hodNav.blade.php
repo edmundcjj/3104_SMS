@@ -38,11 +38,11 @@
                     </a>
                 </div>
                 <ul class="nav navbar-nav">
-                    <li class="{{ Request::is('lecturer') ? "active" : "" }}"><a href="/lecturerparticular">Personal Particular</a></li>
-                    <li class="{{ Request::is('grade') ? "active" : "" }}"><a href="/hod_view_grades">Grade</a></li>
-                    <li class="{{ Request::is('grade') ? "active" : "" }}"><a href="/recommendation">Recommendation</a></li>
-                    <li class="{{ Request::is('student') ? "active" : "" }}"><a href="/students">Student Particular</a></li>
-                    <li class="{{ Request::is('course') ? "active" : "" }}"><a href="/course_incharge">Course</a></li>
+                    <li class="{{ Request::is('lecturerparticular') ? "active" : "" }}"><a href="/lecturerparticular">Personal Particular</a></li>
+                    <li class="{{ Request::is('hod_view_grades') ? "active" : "" }}"><a href="/hod_view_grades">Grade</a></li>
+                    <li class="{{ Request::is('recommendation') ? "active" : "" }}"><a href="/recommendation">Recommendation</a></li>
+                    <li class="{{ Request::is('students') ? "active" : "" }}"><a href="/students">Student Particular</a></li>
+                    <li class="{{ Request::is('course_incharge') ? "active" : "" }}"><a href="/course_incharge">Course</a></li>
                   <!--   <li class="{ { Request::is('course') ? "active" : "" }}"><a href="/hods">HOD Particular</a></li> -->
                 </ul>
 

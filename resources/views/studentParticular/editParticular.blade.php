@@ -1,4 +1,4 @@
-f+@extends('home')
+@extends('home')
 
 @section('stylesheet')
 

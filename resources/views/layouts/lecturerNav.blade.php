@@ -38,9 +38,9 @@
                 </a>
             </div>
             <ul class="nav navbar-nav">
-                <li class="{{ Request::is('lecturer') ? "active" : "" }}"><a href="/lecturerparticular">Personal Particular</a></li>
-                <li class="{{ Request::is('grade') ? "active" : "" }}"><a href="/view_grades">Test Grades</a></li>
-                <li class="{{ Request::is('student') ? "active" : "" }}"><a href="/students">Student Particular</a></li>
+                <li class="{{ Request::is('lecturerparticular') ? "active" : "" }}"><a href="/lecturerparticular">Personal Particular</a></li>
+                <li class="{{ Request::is('view_grades') ? "active" : "" }}"><a href="/view_grades">Test Grades</a></li>
+                <li class="{{ Request::is('students') ? "active" : "" }}"><a href="/students">Student Particular</a></li>
             </ul>
 
             <ul class="nav navbar-nav navbar-right">

@@ -28,8 +28,8 @@
 			<td>{!! $r->studentID !!}</td>
 			<td>{!! $r->grade !!}</td> 
 			<td>{!! $r->recommendation !!}</td> 
-			<td>{!! $r->recommendResult !!}</td> 
-			<td><a href="execute{!! $r->recommendResult !!}/{!! $r->resultID !!}" class="btn action btn-primary" >Execute</a></td> 
+			<td>{!! $r->recommendResult !!}</td>
+			<td><a href="executeApprove/{!! $r->resultID !!}" class="btn action btn-primary" >Execute</a></td>
 			
 		</tr>
 		@endforeach

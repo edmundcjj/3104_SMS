@@ -93,11 +93,21 @@ class GradeController extends Controller
 
     public function execute_list()
     {
-        error_log('exe!');
+//        error_log('exe!');
+//        $recommendList = DB::table('result')
+//        ->join('test', 'result.testID', '=', 'test.testID')
+//        ->select('result.*', 'test.testName')
+//        ->whereIn('recommendResult', ['Approve'])->get();
+
         $recommendList = DB::table('result')
-        ->join('test', 'result.testID', '=', 'test.testID')
-        ->select('result.*', 'test.testName')
-        ->whereIn('recommendResult', ['Approve', 'Reject'])->get();
+            ->join('student', 'result.studentID', '=', 'student.studentID')
+            ->join('module', 'result.moduleID', '=', 'module.moduleID' )
+            ->join('course', 'student.courseID', '=', 'course.courseID')
+            ->join('test','result.testID', '=', 'test.testID')
+            //->where('result.recommendation', '!=', ' ')
+            ->where('result.recommendResult', 'Approved')
+            ->orderBy('result.moduleID', 'asc')
+            ->get();
         return view('testGrades.executeRecommendList')->with('recommendList', $recommendList);
     }
 
@@ -108,6 +118,24 @@ class GradeController extends Controller
         DB::table('result')->where('resultID', $rid)->update(['grade'=>50, 'recommendResult'=>'Prev '. $prev->first()]);
         $sid = DB::table('result')->where('resultID', $rid)->pluck('studentID');
         Session::flash('success', 'Executed Recommendation for '.$sid->first().'!');
+
+
+        $testID = DB::table('result')->where('resultID', $rid)->pluck('testID');
+
+        //check whether there are any more recommendation
+        $checkRecommendation = DB::table('result')
+            ->where('testID', '=', $testID)
+            ->where('recommendResult', '=', "Approved")
+            ->get();
+
+
+        if ( $checkRecommendation ->isEmpty() )
+        {
+            //no recommendation left
+            DB::table('test')
+                ->where('testID', $testID)
+                ->update(['status' => "Updated"]);
+        }
         return view('testGrades.execute');
     }
     public function executereject($rid)
@@ -119,31 +147,24 @@ class GradeController extends Controller
         return view('testGrades.execute');
     }
 
-    public function approve($rid)
-    {
-        error_log('Approved!');
-        DB::table('result')->where('resultID', $rid)->update(['recommendResult'=>'Approve']);
-        $sid = DB::table('result')->where('resultID', $rid)->pluck('studentID');
-        Session::flash('success', 'Approved Recommendation for '.$sid->first().'!');
-        return view('testGrades.statusresult');
-    }
-
 //    public function approve($rid)
 //    {
 //        error_log('Approved!');
-//        DB::table('result')->where('resultID', $rid)->update(['recommendResult'=>'Approved']);
-//
+//        DB::table('result')->where('resultID', $rid)->update(['recommendResult'=>'Approve']);
 //        $sid = DB::table('result')->where('resultID', $rid)->pluck('studentID');
 //        Session::flash('success', 'Approved Recommendation for '.$sid->first().'!');
 //        return view('testGrades.statusresult');
 //    }
 
-    public function reject($rid)
+    public function approve($rid)
     {
-        error_log('Rejected!');
-        DB::table('result')->where('resultID', $rid)->update(['recommendResult'=>'Rejected']);
+        error_log('Approved!');
+        DB::table('result')->where('resultID', $rid)->update(['recommendResult'=>'Approved']);
+
         $sid = DB::table('result')->where('resultID', $rid)->pluck('studentID');
-        Session::flash('success', 'Rejected Recommendation for '.$sid->first().'!');
+        Session::flash('success', 'Approved Recommendation for '.$sid->first().'!');
+
+
         return view('testGrades.statusresult');
     }
 
@@ -151,34 +172,43 @@ class GradeController extends Controller
 //    {
 //        error_log('Rejected!');
 //        DB::table('result')->where('resultID', $rid)->update(['recommendResult'=>'Rejected']);
-//
-//        //check whether any more recommendation for the particular test
-//        $testID = DB::table('result')->where('resultID', $rid)->pluck('testID');
-//        $checkRecommendation = DB::table('result')
-//            ->where('testID', '=', $testID)
-//            ->where('recommendResult', '=', "Pending")
-//            ->get();
-//
-//        if ( $checkRecommendation ->isEmpty() )
-//        {
-//            //Check got any approve status
-//            $checkAnyApprove = DB::table('result')
-//                ->where('testID', '=', $testID)
-//                ->where('recommendResult', '=', "Approved")
-//                ->get();
-//
-//            if ( $checkAnyApprove ->isEmpty() )
-//            {
-//                DB::table('test')
-//                    ->where('testID', $testID)
-//                    ->update(['status' => "Updated"]);
-//            }
-//        }
-//
 //        $sid = DB::table('result')->where('resultID', $rid)->pluck('studentID');
 //        Session::flash('success', 'Rejected Recommendation for '.$sid->first().'!');
 //        return view('testGrades.statusresult');
 //    }
+
+    public function reject($rid)
+    {
+        error_log('Rejected!');
+        DB::table('result')->where('resultID', $rid)->update(['recommendResult'=>'Rejected']);
+
+        //check whether any more recommendation for the particular test
+        $testID = DB::table('result')->where('resultID', $rid)->pluck('testID');
+        $checkRecommendation = DB::table('result')
+            ->where('testID', '=', $testID)
+            ->where('recommendResult', '=', "Pending")
+            ->get();
+
+        if ( $checkRecommendation ->isEmpty() )
+        {
+            //Check got any approve status
+            $checkAnyApprove = DB::table('result')
+                ->where('testID', '=', $testID)
+                ->where('recommendResult', '=', "Approved")
+                ->get();
+
+            if ( $checkAnyApprove ->isEmpty() )
+            {
+                DB::table('test')
+                    ->where('testID', $testID)
+                    ->update(['status' => "Updated"]);
+            }
+        }
+
+        $sid = DB::table('result')->where('resultID', $rid)->pluck('studentID');
+        Session::flash('success', 'Rejected Recommendation for '.$sid->first().'!');
+        return view('testGrades.statusresult');
+    }
 
     //view a test grade
     public function details_index($tid)
