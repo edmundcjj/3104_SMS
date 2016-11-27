@@ -184,4 +184,11 @@ class HomeController extends Controller
         Auth::logout();
         return view('auth.login');
     }
+    
+     public function homePage()
+    {
+        $uid = Auth::user()->name;
+
+        return view('home');
+    }
 }

@@ -63,7 +63,7 @@
 		@if(Auth::user()->role == "Admin" || Auth::user()->role == "Hod" || Auth::user()->role == "Lecturer")
 		<center><a href="{{ route('students.index') }}" class="btn btn-default">Back</a>
 		@else
-		<a href="{{ url('home') }}" class="btn btn-default">Back</a>
+		<a href="{{ url('homepage') }}" class="btn btn-default">Back</a>
 		@endif
 
 		{!! Form::submit('Update Particular', ['class' => 'btn btn-success']) !!}</center>
