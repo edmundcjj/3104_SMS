@@ -53,7 +53,7 @@
 		</tr>
 		@endforeach
 		</table>
-		{!! Form::submit('Submit', array('class'=>'btn btn-lg', 'style'=>'float:right')) !!}
+		{!! Form::submit('Save', array('class'=>'btn btn-lg', 'style'=>'float:right')) !!}
 		<br>
 		<br>
 	</div>
