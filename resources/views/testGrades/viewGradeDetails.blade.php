@@ -11,7 +11,8 @@
 
 	{{--<h2><span class="glyphicon glyphicon-user"></span> Tan Ah Kao</h2>--}}
 	<h4> Grades </h4>
-	Tests:
+	Deadline to Submit:
+	{{$deadlinetime}}
 
 	<div class="table-responsive">
 	<table class="table table-condensed">
