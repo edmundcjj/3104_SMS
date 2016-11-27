@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 25, 2016 at 12:11 AM
+-- Generation Time: Nov 27, 2016 at 12:20 PM
 -- Server version: 10.1.16-MariaDB
 -- PHP Version: 5.6.24
 
@@ -47,7 +47,7 @@ INSERT INTO `admin` (`adminID`, `adminName`, `adminNric`, `email`) VALUES
 --
 
 CREATE TABLE `alumni` (
-  `alumniID` int(11) NOT NULL,
+  `alumniID` varchar(10) COLLATE utf8_unicode_ci NOT NULL,
   `alumniName` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
   `dob` date NOT NULL,
   `address` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
@@ -784,11 +784,6 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for dumped tables
 --
 
---
--- AUTO_INCREMENT for table `alumni`
---
-ALTER TABLE `alumni`
-  MODIFY `alumniID` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `result`
 --
