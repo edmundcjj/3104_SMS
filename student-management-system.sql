@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 27, 2016 at 01:08 PM
+-- Generation Time: Nov 27, 2016 at 02:02 PM
 -- Server version: 10.1.16-MariaDB
 -- PHP Version: 5.6.24
 
@@ -631,8 +631,8 @@ INSERT INTO `test` (`testID`, `testName`, `status`, `moduleID`, `lecturerID`, `g
 (88, 'Mid Term 6', 'Saved', 2007, 'LT16005H', '0000-00-00'),
 (90, 'Mid Term 8', 'Saved', 2007, 'LT16005H', '0000-00-00'),
 (92, 'Mid Term 10', 'Saved', 1009, 'LT16604O', '0000-00-00'),
-(93, 'Mid Term 11', 'Saved', 2001, 'LT16609B', '0000-00-00'),
-(96, 'Mid Term 14', 'Saved', 2001, 'LT16609B', '0000-00-00'),
+(93, 'Mid Term 11', 'Saved', 2001, 'LT16609B', '2016-12-22'),
+(96, 'Mid Term 14', 'Saved', 2001, 'LT16609B', '2016-11-25'),
 (108, 'Mid Term 26', 'Saved', 2005, 'LT49681E', '0000-00-00'),
 (109, 'Mid Term 27', 'Saved', 2005, 'LT49681E', '0000-00-00'),
 (112, 'Mid Term 30', 'Saved', 2006, 'LT49681E', '0000-00-00');
