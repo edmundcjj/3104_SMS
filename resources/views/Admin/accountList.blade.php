@@ -36,7 +36,8 @@
 			<tbody>
 				@foreach($studentAcc as $student_acc)
 
-			  		@if((strtotime($currentDate) - strtotime($student_acc->password_date))/(86400) >= 80)
+			  		@if((strtotime($currentDate) - strtotime($student_acc->password_date))/(86400) >= 80 &&
+			  		(strtotime($currentDate) - strtotime($student_acc->password_date))/(86400) <= 100)
 					<tr>
 						<td> {!! $student_acc->studentName !!} </td>
 					    <td> {!! $student_acc->studentID !!} </td>
@@ -73,7 +74,7 @@
 				@foreach($lecturerAcc as $lecturer_acc)
 
 					 @if($lecturer_acc->position == "Staff")
-					 @if((strtotime($currentDate) - strtotime($lecturer_acc->password_date))/(86400) >= 80)			
+					 @if((strtotime($currentDate) - strtotime($lecturer_acc->password_date))/(86400) >= 80 && (strtotime($currentDate) - strtotime($lecturer_acc->password_date))/(86400) <= 100)			
 					 <tr>
 						<td> {!! $lecturer_acc->lecturerName !!} </td>
 						<td> {!! $lecturer_acc->lecturerID !!} </td>
@@ -111,7 +112,7 @@
 				<tbody>
 				@foreach($lecturerAcc as $lecturer_acc)
 					@if($lecturer_acc->position == "Hod")
-					@if((strtotime($currentDate) - strtotime($lecturer_acc->password_date))/(86400) >= 80)
+					@if((strtotime($currentDate) - strtotime($lecturer_acc->password_date))/(86400) >= 80 && (strtotime($currentDate) - strtotime($lecturer_acc->password_date))/(86400) <= 100)
 						<tr>
 							<td> {!! $lecturer_acc->lecturerName !!} </td>
 							<td> {!! $lecturer_acc->lecturerID !!} </td>

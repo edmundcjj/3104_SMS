@@ -210,6 +210,12 @@ class StudentController extends Controller
         // If Password remain the same in Database
         if(Student::where('studentID', '=', $id)->where('studentPassword', '=', $getPassword)->exists())
         {
+
+            $this->validate($request,[
+
+                'stud_Pass' => 'regex:/^(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?#&])[A-Za-z\d$@$!%*?#&]{7,}$/',
+            ]);
+
             // Validate Role is Admin/ Lecturer / HOD
             if($getUserRole == "Admin" || $getUserRole == "Lecturer" || $getUserRole == "Hod"){
                 Log::info(' NON Student w/o Password');

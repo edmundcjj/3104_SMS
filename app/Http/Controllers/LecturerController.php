@@ -161,6 +161,11 @@ class LecturerController extends Controller
         if(Lecturer::where('lecturerID', '=', $id)->where('lecturerPassword' , '=' , $getPassword  )->exists())
         {
 
+            $this->validate($request,[
+
+                'lect_Pass' => 'regex:/^(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?#&])[A-Za-z\d$@$!%*?#&]{7,}$/',
+            ]);
+
              if($getUserRole == 'Admin'){
                // Log::info('Admin change w/o password');
                 // Admin able to change Lecturer status
