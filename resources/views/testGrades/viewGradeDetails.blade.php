@@ -32,14 +32,18 @@
 			<td>@if($currenttime > $deadlinetime)
 				{{--<td><a class="btn action btn-info" href="{{ url('grades_details_edit', $test->resultID)}}" >Edit</a></td>--}}
 				@else
+				@if($teststatus == "Saved")
 				<td><a class="btn action btn-info" href="{{ url('grades_details_edit', $test->resultID) }}" >Edit</a></td>
+				@endif
 				@endif
 			</td>
 		</tr>
 		@endforeach
 	</tbody>
 	</table>
+		@if($teststatus == "Saved")
 		<a style="float:right" class="btn action btn-info" href="{{ url('grades_details_submit', $test->resultID) }}" >Submit to HOD</a>
+		@endif
 	</div>
 		<br>
 		<br>

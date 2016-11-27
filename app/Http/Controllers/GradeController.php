@@ -226,6 +226,10 @@ class GradeController extends Controller
             ->where('testID','=', $tid)
             ->get();
 
+        foreach ($deadlineDate as $date)
+        {
+            $teststatus = $date->status;
+        }
 
         foreach ($deadlineDate as $d)
         {
@@ -237,7 +241,7 @@ class GradeController extends Controller
         $today_date = Carbon\Carbon::today()->format("Y-m-d");
 
 
-        return view('testGrades.viewGradeDetails')->with('testList', $testList)->with('currenttime', $today_date)->with('deadlinetime', $deadline);
+        return view('testGrades.viewGradeDetails')->with('testList', $testList)->with('currenttime', $today_date)->with('deadlinetime', $deadline)->with('teststatus', $teststatus);
     }
 
     //edit a student grade
